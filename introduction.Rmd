@@ -1,0 +1,63 @@
+---
+title: "Introduction to pldist"
+author: "Anna Plantinga"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to pldist}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+`pldist` is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although use for highly unbalanced designs is not recommended. 
+
+The author and maintainer of the `pldist` R package is Anna Plantinga. 
+
+## Installation 
+
+Currently, the package may only be downloaded and installed from GitHub using the `devtools` package. Type the following command in your R console: 
+
+```{r installation-instructions}
+# only run if you don't have devtools installed 
+# install.packages("devtools") 
+library(devtools) 
+devtools::install_github("aplantin/pldist")
+``` 
+
+## Usage Guide
+
+This section provides an overview of the main components of the package and usage basics. We will briefly outline the main functions, see examples of function usage, and examine the output. 
+
+First, we load the `pldist` package. 
+
+```{r load} 
+library(pldist)
+``` 
+
+The primary function in this package calculates distance (or dissimilarity) matrices for all subjects in a dataset. Users can specify paired versus longitudinal, qualitative versus quantitative analysis, and the desired distance metric via function arguments. 
+
+To demonstrate function usage, we load a simulated dataset created in advance. The code to create this dataset is included as an appendix to this vignette. 
+
+## Transformations and Dissimilarities
+
+In this section, we provide the mathematical definitions for the transformations and distances/dissimilarities included in the package, along with some notes about expected behavior and features of particular metrics. 
+
+
+
+## References 
+
+Anna M. Plantinga, Jun Chen, Robert R. Jenq, and Michael C. Wu. pldist: Ecological Dissimilarities for Paired and Longitudinal Microbiome Association Analysis. Under review. 
+
+Jun Chen, Kyle Bittinger, Emily S. Charlson, Christian Hoffmann, James Lewis, Gary D. Wu, Ronald G. Collman, Frederic D. Bushman, and Hongzhe Li (2012). Associating microbiome composition with environmental covariates using generalized UniFrac distances. Bioinformatics 28(16): 2106-2113.
+
+Jari Oksanen, F. Guillaume Blanchet, Roeland Kindt, Pierre Legendre, Peter R. Minchin, R. B. O’hara, Gavin L. Simpson et al. (2013). Package ‘vegan’. Community ecology package, version 2, no. 9.
+

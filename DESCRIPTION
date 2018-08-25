@@ -1,0 +1,23 @@
+Package: pldist
+Title: Paired and Longitudinal Ecological Dissimilarities
+Version: 0.0.0.9000
+Authors@R: c(person("Anna M.", "Plantinga", email = "amp9@williams.edu", role = c("aut", "cre")),
+            person("Jun", "Chen", role = c("aut")))
+Author: Anna M. Plantinga [aut, cre], Jun Chen [aut]
+Maintainer: Anna M. Plantinga <amp9@williams.edu>
+Description: Calculates paired and longitudinal UniFrac, Bray-Curtis, Jaccard, Gower, and 
+    Kulczynski distances/dissimilarities. These metrics summarize changes in the microbiome 
+    over time and allow these changes to be compared across treatments, conditions, or 
+    levels of a covariate. For more information, please see Plantinga et al (2018+).  
+Depends: R (>= 3.4.3)
+Imports: ape
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+NeedsCompilation: no
+Packaged: 2018-04-27 15:36:33 UTC; anna
+Suggests: knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr

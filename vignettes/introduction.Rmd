@@ -1,0 +1,296 @@
+---
+title: "Introduction to pldist"
+author: "Anna Plantinga"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to pldist}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(ape) 
+```
+
+## Outline  
+
+- [Introduction] 
+- [Installation]
+- [Usage Guide]
+    + [Data Transformations] 
+    + [Non-Phylogenetic Distances] 
+    + [UniFrac Family Distances] 
+- [Transformations and Dissimilarities] 
+    + [Transformations] 
+    + [Bray-Curtis]
+    + [Jaccard] 
+    + [Kulczynski] 
+    + [Gower] 
+    + [Unweighted UniFrac] 
+    + [Generalized UniFrac]
+- [Appendix: Generating Test Data]
+- [References] 
+
+## Introduction
+
+`pldist` is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although use for highly unbalanced designs is not recommended. 
+
+The author and maintainer of the `pldist` R package is Anna Plantinga. 
+
+## Installation 
+
+Currently, the package may only be downloaded and installed from GitHub using the `devtools` package. Type the following command in your R console: 
+
+```{r installation-instructions}
+# only run if you don't have devtools installed 
+# install.packages("devtools") 
+library(devtools) 
+devtools::install_github("aplantin/pldist")
+``` 
+
+## Usage Guide
+
+This section provides an overview of the main components of the package and usage basics. We will briefly outline the main functions, see examples of function usage, and examine the output. 
+
+First, we load the `pldist` package. 
+
+```{r load} 
+library(pldist)
+``` 
+
+The primary function in this package calculates distance (or dissimilarity) matrices for all subjects in a dataset. Users can specify paired versus longitudinal, qualitative versus quantitative analysis, and the desired distance metric via function arguments. 
+
+We demonstrate function behavior using simulated data. The code to generate this data is included in the Appendix. 
+
+```{r load-data}
+data("sim.tree")
+data("paired.otus"); data("paired.meta")
+data("bal.long.otus"); data("bal.long.meta")
+data("unbal.long.otus"); data("unbal.long.meta")
+```
+
+
+### Data Transformations 
+
+The data transformation function is 
+
+```{r transform-paired} 
+
+
+``` 
+
+### Non-Phylogenetic Distances 
+
+### UniFrac Family Distances 
+
+
+
+## Transformations and Dissimilarities
+
+In this section, we provide the mathematical definitions for the transformations and distances/dissimilarities included in the package, along with a few notes about features of particular metrics. Throughout, $m$ is the number of OTUs measured (generally indexed by $k$), $q$ is the number of time points observed per subject (generally indexed by $l$), and $p_k^{(X, l)}$ is the relative abundance (proportion) of taxon $k$ for subject $X$ at time $l$. The latter is abbreviated to $p_k^X$ for single time point metrics. 
+
+### Transformations 
+
+We introduce four transformations for OTU abundance data, depending on whether the data are paired or longitudinal and whether the user prefers a quantitative analysis (changes in taxon abundance) or qualitative analysis (changes in taxon presence/absence).  
+
+1. Paired, Qualitative: $$
+d_k^A(t_1, t_2) = \frac{1}{2} \cdot \left[ I\left(p_k^{(A, t_1)} > 0\right) - I\left(p_k^{(A, t_2)} > 0\right) \right] \in \lbrace -0.5, 0, 0.5 \rbrace $$
+2. Paired, Quantitative: $$ 
+d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] $$
+3. Longitudinal, Qualitative: $$ d_k^A(t_1, \ldots, t_q)  = \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert I(p_k^{A,t_{l+1}} > 0) - I(p_k^{A, t_l} > 0) \right\rvert $$
+4. Longitudinal, Quantitative: $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert $$
+
+There are several items to note in comparing these transformations. 
+
+- The paired transformation is not equivalent to the longitudinal transformation applied at two time points: the paired transformations incorporate direction of change, whereas the longitudinal versions only summarize absolute magnitude of change. 
+- Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups. 
+- Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same $d_k$ as a change from 0.02 to 0.04. 
+    - In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter $\gamma$. No such adjustments are currently available for other dissimilarities. 
+
+### Bray-Curtis 
+
+The Bray-Curtis dissimilarity is a commonly used non-phylogenetic ecological dissimilarity. It is most commonly quantitative. The usual definition for a single time point is 
+$$ D_{AB} = \frac{1}{2} \sum_{k=1}^m \lvert p_k^A - p_k^B \rvert. $$
+Intuitively, this is the proportion of each taxon that is found in only one subject. The binary version of this metric is 
+$$ D_{AB} = 1 - \frac{2|A \cap B|}{|A| + |B|}, $$
+which translates to the number of species found in only one subject relative to the total for both subjects. 
+
+The corresponding dissimilarity for both paired and longitudinal settings is defined as 
+$$ D_{AB} = \frac{1}{m} \sum_{k=1}^m \lvert d_k^A - d_k^B \rvert, $$
+summarizing the proportion of change for each taxon that occurs only in one subject, where $d_k^X$ is defined using the appropriate transformation for the setting (paired/longitudinal, quantitative/qualitative). 
+
+### Jaccard 
+
+The Jaccard distance is another common non-phylogenetic metric. This one is most often qualitative (computed on presence/absence data). Different generalized Jaccard distances exist as quantitative variations of the standard metric; the quantitative paired and longitudinal versions are based on the quantitative Jaccard metric implemented in `vegan`. 
+
+The single timepoint qualitative Jaccard metric is defined as 
+$$ D_{AB} = 1 - \frac{|A \cap B|}{|A \cup B|} $$ 
+and the corresponding quantitative distance is 
+$$D_{AB} = 1 - \frac{\sum_k \min(p_k^A, p_k^B)}{\sum_k \max(p_k^A, p_k^B)}. $$
+The Jaccard similarity is the number (or relative abundances) of taxa shared between subjects divided by the total number of unique taxa observed, and this is subtracted from one to obtain the distance. 
+
+For paired data, a similar concept is to look at the number (or relative abundances) of changes in taxon abundance that are shared between subjects divided by the total observed changes. Hence, the qualitative version is 
+$$ D_{AB} = 1 - \frac{\sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0)}{\sum_k \left[ I(d_k^A \neq 0) + I(d_k^B \neq 0) \right] } $$
+and the quantitative version 
+$$ D_{AB} = 1 - \frac{\sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace}{\sum_k \max(|d_k^A|, |d_k^b|)}$$
+where sgn($\cdot$) is a generalized sign operator such that $\mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B)$ is TRUE if either $d_k^A$ or $d_k^B$ is zero or if both have the same non-zero sign. 
+
+In the longitudinal case, both the qualitative and quantitative metric are defined as 
+$$ D_{AB} = 1 - \frac{\sum_k \min(d_k^A, d_k^B)}{\sum_k \max(d_k^A, d_k^B)}. $$ 
+
+### Kulczynski 
+
+Each Kulczynski metric is essentially the numerator of the corresponding Jaccard metric. At a single time point, the qualitative Kulczynski distance is calculated as 
+$$  D_{AB} = 1 - \frac{1}{2} \left( \frac{|A \cap B|}{|A|} + \frac{|A \cap B|}{|B|} \right) $$ 
+and the corresponding quantitative measure as 
+$$  D_{AB} = 1 - \sum_k \min(p_k^A, p_k^B) $$ 
+
+The paired versions are 
+$$ \mbox{Qualitative:  } \qquad D_{AB} = 1 - \frac{1}{m} \sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0) $$ 
+and 
+$$ \mbox{Quantitative:  } \qquad  D_{AB} = 1 - \frac{2}{m} \sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace. $$ 
+Similarly, both qualitative and quantitative longitudinal versions may be calculated as 
+$$ D_{AB} = 1 - \frac{1}{m} \sum_k \min(d_k^A, d_k^B). $$ 
+
+### Gower 
+
+The qualitative Gower dissimilarity is 
+$$D_{AB} = \frac{|A| + |B| - 2|A \cap B|}{m},$$
+where $q$ is the total number of OTUs, and the quantitative version is 
+$$D_{AB} = \frac{1}{m} \sum_k \frac{\lvert p_k^A - p_k^B \rvert}{\max p_k - \min p_k}. $$ 
+The paired and longitudinal distances, both qualitative and quantitative, are defined as 
+$$ D_{AB} = \frac{1}{m} \sum_k \frac{\lvert d_k^A - d_k^B \rvert }{\max d_k - \min d_k}. $$ 
+Note that the denominator normalizes the contribution from a particular taxon for a pair of individuals (A and B) by the largest observed pairwise dissimilarity with respect to that taxon ($\mbox{max} d_k - 
+\mbox{min} d_k$). 
+
+### Unweighted UniFrac 
+
+The UniFrac family of distances is very commonly used in microbiome association analysis, in part because they incorporate the phylogenetic tree that describes evolutionary relationships between the observed OTUs. The standard unweighted UniFrac distance (Lozupone and Knight, 2005) is defined as 
+$$ D_{AB} =  \frac{\sum_i b_i \lvert I(p_i^A > 0) - I(p_i^B > 0)\rvert}{\sum_i b_i} $$ 
+where $b_i$ is the length of branch $i$ on the phylogenetic tree. In this setting, $p_i^X$ are the proportions descending from branch $i$ for subject $X$. 
+
+The paired and longitudinal version of this distance, using the qualitative transformations (paired or longitudinal, as desired), uses exactly the same distance calculated on the transformed data: 
+$$D_{AB} = \frac{\sum_i b_i \lvert d_i^A - d_i^B \rvert}{\sum_i b_i}.$$
+
+In the paired case, because direction of change matters, $|d_i^A - d_i^B|$ will be 0.5 if taxon presence changed in only one subject, and it will be 1 if taxon presence changed in different directions for each subject (i.e., the taxon was gained between time points in one subject and lost in the other subject). 
+
+In the longitudinal case, direction of change does not matter, so this metric essentially looks at how often the taxon was lost or gained between sequential time points for each subject (regardless of in which direction the change occurred). 
+
+### Generalized UniFrac 
+
+The generalized UniFrac distance, introduced in Chen et al. (2012), is defined as 
+$$ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (p_i^A + p_i^B)^\gamma \left\lvert \frac{p_i^A - p_i^B}{p_i^A + p_i^B} \right\rvert}{\sum_i b_i (p_i^A + p_i^B)^\gamma } $$ 
+where the parameter $\gamma \in [0,1]$, chosen by the user, changes the weight placed on abundant lineages: $\gamma = 1$ results in high weight on abundant taxa, whereas $\gamma = 0$ considers each difference relative to that taxon's overall abundance, weighting the contribution of rare and common taxa similarly. 
+
+The paired and longitudinal variations on the generalized UniFrac distance, which we term LUniFrac, are defined via 
+$$ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma \lvert d_i^A - d_i^B \rvert} {\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma } $$ 
+where $\bar{p}_i^A = \frac{1}{q} \sum_{l=1}^{q} p_k^{A, t_l}$ is the within-subject average proportion descending from branch $i$. Thus, as in the single time point version, contributions of changes in each branch/taxon are weighted by overall (average) taxon abundance with the weight modulated by $\gamma \in [0,1]$. This is the only metric that incorporates both the original taxon proportions and the transformed data. 
+
+## Appendix: Generating Test Data
+
+All of the UniFrac-family distances require a rooted phylogenetic tree. We use `ape` to generate this tree. 
+
+```{r gen-tree}
+# tree tip names must match column names in OTU table
+gen.tree <- function(seed, notus) {
+  set.seed(seed)
+  sim.tree = rtree(n=notus)
+  sim.tree$tip.label <- paste("otu", sample(1:notus), sep = "")
+  return(sim.tree)
+}
+```
+
+The following data generation function allows simulation of paired, balanced longitudinal, and unbalanced longitudinal data. Note that this data generation mechanism is for **testing and demonstration purposes only**. It does not yield a realistic distribution of OTU counts and should not be used for evaluation or comparison of methods. 
+
+```{r data-gen-fxn} 
+# Parameters: 
+#     nsubj: number of subjects 
+#     maxtimes: maximum number of time points 
+#         (use maxtimes=2 for paired data) 
+#     maxdiff: maximum difference between observed times 
+#         (use maxdiff = 1 for observation at consecutive time units) 
+#     balanced: logical indicating whether design should be balanced 
+#         (all subjects observed at the same time points)
+#     notus: number of observed OTUs 
+#     propzero: proportion of table cells that should be zero
+#         (microbiome data tends to have a high proportion of zeros) 
+#     maxct: maximum possible read count in a single cell
+gen.data <- function(seed, nsubj, maxtimes, maxdiff, balanced, notus, propzero, maxct) {
+  set.seed(seed)
+  if (maxtimes == 2) {
+    ntimes <- rep(2, nsubj) 
+  } else {
+    if (balanced) {
+      ntimes <- rep(sample(2:maxtimes)[1], nsubj)
+    } else {
+      ntimes <- sample(2:maxtimes, nsubj, replace = TRUE)
+    }
+  }
+  ncells = sum(ntimes) * notus
+  nzero = floor(ncells*propzero)
+  toy.otus <- matrix(0, nrow = sum(ntimes), ncol = notus)
+  while (any(c(apply(toy.otus, 1, FUN = function(x) all(x == 0)), 
+               apply(toy.otus, 2, FUN = function(x) all(x == 0))))) {
+    toy.otus <- matrix(sample(c(sample(1:maxct, (ncells - nzero), replace = TRUE), rep(0, nzero))), 
+                       nrow = sum(ntimes), ncol = notus)
+  }
+  toy.props <- counts2props(toy.otus) 
+  subjIDs <- unlist(sapply(1:nsubj, FUN = function(i) {
+    rep(paste("subj", i, sep = ""), ntimes[i]) }, simplify = FALSE))
+  sampIDs <- paste(unlist(sapply(1:nsubj, FUN = function(i) {
+    rep(paste("subj", i, sep = ""), ntimes[i]) }, simplify = FALSE)), 
+    unlist(sapply(1:nsubj, FUN = function(i) letters[1:ntimes[i]], simplify = FALSE)), sep = "")
+  if (balanced) {
+    times <- rep(cumsum(c(1, sample(1:maxdiff, ntimes[1]-1, replace = TRUE))), nsubj)
+  } else {
+    times <- unlist(sapply(1:nsubj, FUN = function(i) {
+      cumsum(c(1, sample(1:maxdiff, ntimes[i]-1, replace = TRUE)))}, simplify = FALSE))
+  }
+  toy.meta <- data.frame(subjID = subjIDs, sampID = sampIDs, 
+                         time   = times, stringsAsFactors = FALSE)
+  rownames(toy.otus) = toy.meta$sampID
+  colnames(toy.otus) = paste("otu", 1:notus, sep = "")
+  return(list(otus = toy.otus, metadata = toy.meta))
+}
+``` 
+
+The code used to generate the test data is below. The data are included with the package.
+
+```{r gen-test-data, eval=FALSE}
+# Paired data (two sequential observations on each subject)
+paired.data <- gen.data(seed = 1, nsubj = 5, maxtimes = 2, maxdiff = 1, balanced = TRUE, notus = 10, propzero = 0.5, maxct = 500)
+paired.otus <- paired.data$otus
+paired.meta <- paired.data$metadata
+
+# Balanced longitudinal data: Same number of observations, at same times, for each subject. 
+# Here each subject has three observations total, at days 1, 3, and 6. 
+# (up to 4 observations allowed, depending on random seed, with max 3 time units between observations)
+bal.long.data <- gen.data(seed = 4, nsubj = 5, maxtimes = 4, maxdiff = 3, balanced = TRUE, notus = 10, propzero = 0.5, maxct = 500)
+bal.long.otus <- bal.long.data$otus
+bal.long.meta <- bal.long.data$metadata
+
+# Unbalanced longitudinal data: Different number and spacing of observations for subjects. 
+# (up to 4 observations per subject with up to 3 time units between observations)
+unbal.long.data <- gen.data(seed = 1, nsubj = 5, maxtimes = 4, maxdiff = 3, balanced = FALSE, notus = 10, propzero = 0.5, maxct = 500)
+unbal.long.otus <- unbal.long.data$otus
+unbal.long.meta <- unbal.long.data$metadata
+
+# Rooted phylogenetic tree with 10 OTUs 
+sim.tree <- gen.tree(seed = 1, notus = 10)
+```
+
+
+## References 
+
+Jun Chen, Kyle Bittinger, Emily S. Charlson, Christian Hoffmann, James Lewis, Gary D. Wu, Ronald G. Collman, Frederic D. Bushman, and Hongzhe Li (2012). Associating microbiome composition with environmental covariates using generalized UniFrac distances. Bioinformatics 28(16): 2106-2113.
+
+Catherine Lozupone and Rob Knight (2005). UniFrac: a new phylogenetic method for comparing microbial communities. Applied and Environmental Microbiology 71(12): 8228-8235.
+
+Jari Oksanen, F. Guillaume Blanchet, Roeland Kindt, Pierre Legendre, Peter R. Minchin, R. B. O’hara, Gavin L. Simpson et al. (2013). Package ‘vegan’. Community ecology package, version 2, no. 9.
+
+Anna M. Plantinga, Jun Chen, Robert R. Jenq, and Michael C. Wu. pldist: Ecological Dissimilarities for Paired and Longitudinal Microbiome Association Analysis. Under review. 

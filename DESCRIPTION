@@ -17,5 +17,5 @@ LazyData: true
 RoxygenNote: 6.1.0
 NeedsCompilation: no
 Packaged: 2018-08-27 15:10:57 UTC; amp9
-Suggests: knitr, rmarkdown, testthat
+Suggests: knitr, rmarkdown, testthat, devtools
 VignetteBuilder: knitr

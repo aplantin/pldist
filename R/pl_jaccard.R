@@ -9,7 +9,9 @@
 #' @export
 #' 
 flexsign <- function(v1, v2) {
-  return(as.numeric( (v1 >= 0 & v2 >= 0) | (v1 <= 0 & v2 <= 0) ))
+  res <- as.numeric( (v1 >= 0 & v2 >= 0) | (v1 <= 0 & v2 <= 0) )
+  if (any(v1 == 0 & v2 == 0)) { res[which(v1 == 0 & v2 == 0)] <- 0 } 
+  return(res)
 }
 
 
@@ -42,7 +44,7 @@ jaccard <- function(tsf.data, paired, binary) {
       for (i in 1:(n-1)) {
         for (j in (i+1):n) {
           num = sum(as.numeric(dat[i, ] == dat[j, ] & dat[i, ] != 0))
-          denom = sum(as.numeric(dat[i, ] != 0)) + sum(as.numeric(dat[j, ] != 0))
+          denom = sum(as.numeric(dat[i, ] != 0 | dat[j, ] != 0))
           if (denom != 0) {
             out.D[i,j] = out.D[j,i] = 1 - num/denom
           } else {

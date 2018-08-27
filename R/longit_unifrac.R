@@ -67,7 +67,7 @@ LUniFrac <- function(otu.tab, tree, gam = c(0, 0.5, 1), metadata) {
   colnames(cum) = rownames(otu.tab)
   
   ### Step 1: calculate within-subject distance data
-  tsf.dat <- pl.transform(otus = t(cum), metadata = metadata, paired = FALSE)$tsf.data 
+  tsf.dat <- pltransform(otus = t(cum), metadata = metadata, paired = FALSE, check.input = FALSE)$tsf.data 
   cum.avg <- t(tsf.dat$avg.prop)
   cum.unw <- t(tsf.dat$dat.binary)
   cum.gen <- t(tsf.dat$dat.quant) 

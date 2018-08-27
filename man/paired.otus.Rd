@@ -6,7 +6,7 @@
 \title{Simulated OTU data for paired study design.}
 \format{A matrix with 10 rows and 10 columns. Rows are samples, columns are OTUs.}
 \usage{
-paired.otus
+data(paired.otus)
 }
 \description{
 Simulation code is included in the package vignette. 

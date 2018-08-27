@@ -2,6 +2,8 @@
 #'
 #' Simulation code is included in the package vignette. 
 #' Corresponding metadata is stored in `paired.meta`. 
+#' 
+#' @usage data(paired.otus)
 #'
 #' @format A matrix with 10 rows and 10 columns. Rows are samples, columns are OTUs. 
 "paired.otus"
@@ -11,6 +13,8 @@
 #'
 #' Simulation code is included in the package vignette. 
 #' Corresponding OTU matrix is stored in `paired.otus`. 
+#' 
+#' @usage data(paired.meta)
 #'
 #' @format A data frame with 10 rows and 3 columns. 
 #' \describe{
@@ -25,6 +29,8 @@
 #'
 #' Simulation code is included in the package vignette. 
 #' Corresponding metadata is stored in `bal.long.meta`. 
+#' 
+#' @usage data(bal.long.otus)
 #'
 #' @format A matrix with 15 rows and 10 columns. Rows are samples, columns are OTUs. 
 "bal.long.otus"
@@ -34,6 +40,8 @@
 #'
 #' Simulation code is included in the package vignette. 
 #' Corresponding OTU matrix is stored in `bal.long.otus`. 
+#' 
+#' @usage data(bal.long.meta)
 #'
 #' @format A data frame with 15 rows and 3 columns. 
 #' \describe{
@@ -47,6 +55,8 @@
 #'
 #' Simulation code is included in the package vignette. 
 #' Corresponding metadata is stored in `unbal.long.meta`. 
+#' 
+#' @usage data(unbal.long.otus)
 #'
 #' @format A matrix with 14 rows and 10 columns. Rows are samples, columns are OTUs. 
 "unbal.long.otus"
@@ -63,6 +73,9 @@
 #'   \item{sampID}{Sample identifiers, matches row names of OTU count matrix}
 #'   \item{time}{Time indicator}
 #' }
+#' 
+#' @usage data(unbal.long.meta)
+#' 
 "unbal.long.meta"
 
 
@@ -72,6 +85,8 @@
 #' Tree includes 10 OTUs and may be used with any of the 
 #' simulated data sets (paired, balanced longitudinal, or 
 #' unbalanced longitudinal). 
+#' 
+#' @usage data(sim.tree)
 #'
 #' @format An object of class "phylo". 
 #' 

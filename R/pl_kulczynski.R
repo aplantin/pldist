@@ -27,21 +27,21 @@ kulczynski <- function(tsf.data, paired, binary) {
     if (binary) {
       for (i in 1:(n-1)) {
         for (j in (i+1):n) {
-          out.D[i, j] = out.D[j, i] = 1 - sum(dat[i, ] == dat[j, ] & dat[i, ] != 0)/m 
+          out.D[i, j] = out.D[j, i] = 1 - sum(dat[i, ] == dat[j, ])/m 
         }
       }
     } else {   # paired but not binary 
       for (i in 1:(n-1)) {
         for (j in (i+1):n) {
           num = sum(pmin(abs(dat[i,]), abs(dat[j,])) * flexsign(dat[i, ], dat[j, ]))
-          out.D[i, j] = out.D[j, i] = 1 - 2*num/m
+          out.D[i, j] = out.D[j, i] = 1 - 0.5 * num * (1/sum(abs(dat[i,])) + 1/sum(abs(dat[j,])))
         }
       }
     }
   } else {  # not paired (longitudinal) 
     for (i in 1:(n-1)) {
       for (j in (i+1):n) {
-        out.D[i,j] = out.D[j,i] = 1 - sum(pmin(dat[i,],dat[j,])) / m
+        out.D[i,j] = out.D[j,i] = 1 - 0.5 * sum(pmin(dat[i,],dat[j,]) * (1/sum(dat[i,]) + 1/sum(dat[j,])))
       }
     }
   }

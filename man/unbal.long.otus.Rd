@@ -6,7 +6,7 @@
 \title{Simulated OTU data for unbalanced longitudinal study design.}
 \format{A matrix with 14 rows and 10 columns. Rows are samples, columns are OTUs.}
 \usage{
-unbal.long.otus
+data(unbal.long.otus)
 }
 \description{
 Simulation code is included in the package vignette. 

@@ -11,7 +11,7 @@
   \item{time}{Time indicator}
 }}
 \usage{
-bal.long.meta
+data(bal.long.meta)
 }
 \description{
 Simulation code is included in the package vignette. 

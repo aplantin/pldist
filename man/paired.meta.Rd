@@ -11,7 +11,7 @@
   \item{time}{Time indicator, takes values 1 or 2}
 }}
 \usage{
-paired.meta
+data(paired.meta)
 }
 \description{
 Simulation code is included in the package vignette. 

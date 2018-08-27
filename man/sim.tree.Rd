@@ -6,7 +6,7 @@
 \title{Simulated rooted phylogenetic tree.}
 \format{An object of class "phylo".}
 \usage{
-sim.tree
+data(sim.tree)
 }
 \description{
 Simulation code is included in the package vignette. 

@@ -39,3 +39,4 @@ test_that("dissimilarities are zero with identical changes", {
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_0"], 0)
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_1"], 0)
 })
+

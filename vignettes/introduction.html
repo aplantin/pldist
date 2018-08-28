@@ -12,7 +12,7 @@
 
 <meta name="author" content="Anna Plantinga" />
 
-<meta name="date" content="2018-08-25" />
+<meta name="date" content="2018-08-27" />
 
 <title>Introduction to pldist</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to pldist</h1>
 <h4 class="author"><em>Anna Plantinga</em></h4>
-<h4 class="date"><em>2018-08-25</em></h4>
+<h4 class="date"><em>2018-08-27</em></h4>
 
 
 
@@ -109,15 +109,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Currently, the package may only be downloaded and installed from GitHub using the <code>devtools</code> package. Type the following command in your R console:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only run if you don't have devtools installed </span>
 <span class="co"># install.packages(&quot;devtools&quot;) </span>
-<span class="kw">library</span>(devtools) 
 devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;aplantin/pldist&quot;</span>)
 <span class="co">#&gt; Downloading GitHub repo aplantin/pldist@master</span>
 <span class="co">#&gt; from URL https://api.github.com/repos/aplantin/pldist/zipball/master</span>
 <span class="co">#&gt; Installing pldist</span>
 <span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
 <span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
-<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpOXOWNz/devtools91d67f311bd3/aplantin-pldist-0a9263e'  \</span>
-<span class="co">#&gt;   --library='/Library/Frameworks/R.framework/Versions/3.4/Resources/library'  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpebFEUa/devtoolscfa960d8cf00/aplantin-pldist-4e9c178'  \</span>
+<span class="co">#&gt;   --library='/Library/Frameworks/R.framework/Versions/3.5/Resources/library'  \</span>
 <span class="co">#&gt;   --install-tests</span>
 <span class="co">#&gt; </span></code></pre></div>
 </div>
@@ -134,7 +133,9 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 <span class="kw">data</span>(<span class="st">&quot;unbal.long.otus&quot;</span>); <span class="kw">data</span>(<span class="st">&quot;unbal.long.meta&quot;</span>)</code></pre></div>
 <div id="data-transformations" class="section level3">
 <h3>Data Transformations</h3>
-<p>The data transformation function is</p>
+<p>The data transformation function is <code>pltransform</code>. The transformations are provided as a separate function so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. This function <strong>does not</strong> need to be called prior to utilizing the distance function; all transformations (and input checking) are included within the distance function.</p>
+<p>The output includes a qualitative (binary)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#pltransform(paired.otus, paired.metadata, paired = TRUE, check.input = TRUE)</span></code></pre></div>
 </div>
 <div id="non-phylogenetic-distances" class="section level3">
 <h3>Non-Phylogenetic Distances</h3>
@@ -176,13 +177,13 @@ d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{
 <h3>Jaccard</h3>
 <p>The Jaccard distance is another common non-phylogenetic metric. This one is most often qualitative (computed on presence/absence data). Different generalized Jaccard distances exist as quantitative variations of the standard metric; the quantitative paired and longitudinal versions are based on the quantitative Jaccard metric implemented in <code>vegan</code>.</p>
 <p>The single timepoint qualitative Jaccard metric is defined as <span class="math display">\[ D_{AB} = 1 - \frac{|A \cap B|}{|A \cup B|} \]</span> and the corresponding quantitative distance is <span class="math display">\[D_{AB} = 1 - \frac{\sum_k \min(p_k^A, p_k^B)}{\sum_k \max(p_k^A, p_k^B)}. \]</span> The Jaccard similarity is the number (or relative abundances) of taxa shared between subjects divided by the total number of unique taxa observed, and this is subtracted from one to obtain the distance.</p>
-<p>For paired data, a similar concept is to look at the number (or relative abundances) of changes in taxon abundance that are shared between subjects divided by the total observed changes. Hence, the qualitative version is <span class="math display">\[ D_{AB} = 1 - \frac{\sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0)}{\sum_k \left[ I(d_k^A \neq 0) + I(d_k^B \neq 0) \right] } \]</span> and the quantitative version <span class="math display">\[ D_{AB} = 1 - \frac{\sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace}{\sum_k \max(|d_k^A|, |d_k^b|)}\]</span> where sgn(<span class="math inline">\(\cdot\)</span>) is a generalized sign operator such that <span class="math inline">\(\mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B)\)</span> is TRUE if either <span class="math inline">\(d_k^A\)</span> or <span class="math inline">\(d_k^B\)</span> is zero or if both have the same non-zero sign.</p>
+<p>For paired data, a similar concept is to look at the number (or relative abundances) of changes in taxon abundance that are shared between subjects divided by the total observed changes. Hence, the qualitative version is <span class="math display">\[ D_{AB} = 1 - \frac{\sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0)}{\sum_k \left[ I(d_k^A \neq 0) \mbox{ or } I(d_k^B \neq 0) \right] } \]</span> and the quantitative version <span class="math display">\[ D_{AB} = 1 - \frac{\sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace}{\sum_k \max(|d_k^A|, |d_k^b|)}\]</span> where sgn(<span class="math inline">\(\cdot\)</span>) is a generalized sign operator such that <span class="math inline">\(\mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B)\)</span> is TRUE if either <span class="math inline">\(d_k^A\)</span> or <span class="math inline">\(d_k^B\)</span> is zero or if both have the same non-zero sign.</p>
 <p>In the longitudinal case, both the qualitative and quantitative metric are defined as <span class="math display">\[ D_{AB} = 1 - \frac{\sum_k \min(d_k^A, d_k^B)}{\sum_k \max(d_k^A, d_k^B)}. \]</span></p>
 </div>
 <div id="kulczynski" class="section level3">
 <h3>Kulczynski</h3>
 <p>Each Kulczynski metric is essentially the numerator of the corresponding Jaccard metric. At a single time point, the qualitative Kulczynski distance is calculated as <span class="math display">\[  D_{AB} = 1 - \frac{1}{2} \left( \frac{|A \cap B|}{|A|} + \frac{|A \cap B|}{|B|} \right) \]</span> and the corresponding quantitative measure as <span class="math display">\[  D_{AB} = 1 - \sum_k \min(p_k^A, p_k^B) \]</span></p>
-<p>The paired versions are <span class="math display">\[ \mbox{Qualitative:  } \qquad D_{AB} = 1 - \frac{1}{m} \sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0) \]</span> and <span class="math display">\[ \mbox{Quantitative:  } \qquad  D_{AB} = 1 - \frac{2}{m} \sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace. \]</span> Similarly, both qualitative and quantitative longitudinal versions may be calculated as <span class="math display">\[ D_{AB} = 1 - \frac{1}{m} \sum_k \min(d_k^A, d_k^B). \]</span></p>
+<p>The paired versions are <span class="math display">\[ \mbox{Qualitative:  } \qquad D_{AB} = 1 - \frac{1}{m} \sum_k I(d_k^A = d_k^B) \]</span> and <span class="math display">\[ \mbox{Quantitative:  } \qquad  D_{AB} = 1 - \frac{1}{2} \sum_k \left(\frac{1}{\sum_k |d_k^A|} + \frac{1}{\sum_k |d_k^B|} \right) \min(|d_k^A|, |d_k^B|)\, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace. \]</span> Similarly, both qualitative and quantitative longitudinal versions may be calculated as <span class="math display">\[ D_{AB} = 1 - \frac{1}{2} \sum_k \left(\frac{1}{\sum_k d_k^A} + \frac{1}{\sum_k d_k^B} \right) \min(d_k^A, d_k^B). \]</span></p>
 </div>
 <div id="gower" class="section level3">
 <h3>Gower</h3>

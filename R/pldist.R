@@ -29,7 +29,9 @@
 #'     distance. The unweighted distance matrix may be accessed by result[,,"d_UW"], and the 
 #'     generalized dissimilarities by result[,,"d_G"] where G is the particular choice of gamma.} 
 #'     \item{type}{String indicating what type of dissimilarity was requested.}
-#'
+#'     
+#' @importFrom ape rtree is.rooted drop.tip
+#'     
 #' @export
 #'
 pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree = NULL, gam = c(0, 0.5, 1)) {
@@ -41,7 +43,7 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree 
   } 
   method = method.opts[this.method]
   
-  okdat <- check_input(otus, metadata, paired)
+  okdat <- check_input(otus = otus, metadata = metadata, paired = paired)
   otus <- okdat$otus 
   metadata <- okdat$metadata 
   remove(okdat) 
@@ -61,11 +63,7 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree 
     ## Calculate paired/longitudinal UniFrac dissimilarities 
     if (is.null(tree)) stop("Tree is required for UniFrac family metrics.")
     if (!is.rooted(tree)) stop("Rooted phylogenetic tree required!") 
-    if (paired) {
-      D <- PUniFrac(otu.tab = otus, tree = tree, gam = gam, metadata = metadata)
-    } else {
-      D <- LUniFrac(otu.tab = otus, tree = tree, gam = gam, metadata = metadata)
-    }
+    D <- LUniFrac(otu.tab = otus, tree = tree, gam = gam, metadata = metadata, paired = paired)
   } 
   
   if (paired) {

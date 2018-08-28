@@ -40,3 +40,4 @@ test_that("function stops when it should", {
   data("unbal.long.otus")
   expect_warning(pldist(otus = unbal.long.otus, metadata = unbal.long.meta, paired = FALSE, binary = FALSE, method = "bray", tree = NULL, gam = c(0, 0.5, 1) ), "unbalanced designs")
 })
+

@@ -60,3 +60,4 @@ test_that("transformations give expected result", {
   expect_equal(pltransform(otus, metadata, paired = FALSE)$tsf.data$dat.quant[1,], exp.quant.subj1)
   expect_equal(pltransform(otus, metadata, paired = FALSE)$tsf.data$avg.prop[1,], exp.avg.subj1) 
 })
+

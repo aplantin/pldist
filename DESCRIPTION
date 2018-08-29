@@ -1,6 +1,6 @@
 Package: pldist
 Title: Paired and Longitudinal Ecological Dissimilarities
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: c(person("Anna M.", "Plantinga", email = "amp9@williams.edu", role = c("aut", "cre")),
             person("Jun", "Chen", role = c("aut")))
 Author: Anna M. Plantinga [aut, cre], Jun Chen [aut]

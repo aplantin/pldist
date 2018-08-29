@@ -11,22 +11,33 @@
 #' distance-based analyses.
 #'
 #' @param otu.tab OTU count table, containing 2*n rows (samples) and q columns (OTUs)
-#' @param tree Rooted phylogenetic tree of R class "phylo"
-#' @param gam Parameter controlling weight on abundant lineages. The same weight is used within a subjects as between subjects.
 #' @param metadata Data frame with three columns: subject identifiers (n unique values), 
-#'     sample identifiers (must match row names of otu.tab), 
-#'     and time or group indicator (numeric variable, or factor with levels such that as.numeric returns 
-#'     the desired ordering). Column names should be subjID, sampID, time. 
+#'    sample identifiers (must match row names of otu.tab), 
+#'    and time or group indicator (numeric variable, or factor with levels such that as.numeric returns 
+#'    the desired ordering). Column names should be subjID, sampID, time. 
+#' @param tree Rooted phylogenetic tree of R class "phylo"
+#' @param gam Parameter controlling weight on abundant lineages. The same weight is 
+#'    used within a subjects as between subjects.
 #' @param paired Logical indicating whether to use the paired (TRUE) or longitudinal (FALSE) transformation. 
+#' @param check.input Logical indicating whether to check the function input values for formatting or 
+#'    entry errors (default TRUE). 
 #' @return Returns a (K+1) dimensional array containing the longitudinal UniFrac dissimilarities 
 #'    with the K specified gamma values plus the unweighted distance. The unweighted dissimilarity 
 #'    matrix may be accessed by result[,,"d_UW"], and the generalized dissimilarities by result[,,"d_G"] 
 #'    where G is the particular choice of gamma.
-#' 
+#'    
 #' @export
 #' 
-LUniFrac <- function(otu.tab, tree, gam = c(0, 0.5, 1), metadata, paired) {
+LUniFrac <- function(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired, check.input = TRUE) {
   n <- nrow(otu.tab)
+  
+  # Check input data 
+  if (check.input) {
+    okdat <- check_input(otu.tab, metadata, paired)
+    otu.tab <- okdat$otus 
+    metadata <- okdat$metadata 
+    remove(okdat) 
+  }
   
   # Check OTU name consistency
   if (sum(!(colnames(otu.tab) %in% tree$tip.label)) != 0) {

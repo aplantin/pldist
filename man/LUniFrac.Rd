@@ -4,21 +4,26 @@
 \alias{LUniFrac}
 \title{LUniFrac}
 \usage{
-LUniFrac(otu.tab, tree, gam = c(0, 0.5, 1), metadata, paired)
+LUniFrac(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired,
+  check.input = TRUE)
 }
 \arguments{
 \item{otu.tab}{OTU count table, containing 2*n rows (samples) and q columns (OTUs)}
-
-\item{tree}{Rooted phylogenetic tree of R class "phylo"}
-
-\item{gam}{Parameter controlling weight on abundant lineages. The same weight is used within a subjects as between subjects.}
 
 \item{metadata}{Data frame with three columns: subject identifiers (n unique values), 
 sample identifiers (must match row names of otu.tab), 
 and time or group indicator (numeric variable, or factor with levels such that as.numeric returns 
 the desired ordering). Column names should be subjID, sampID, time.}
 
+\item{tree}{Rooted phylogenetic tree of R class "phylo"}
+
+\item{gam}{Parameter controlling weight on abundant lineages. The same weight is 
+used within a subjects as between subjects.}
+
 \item{paired}{Logical indicating whether to use the paired (TRUE) or longitudinal (FALSE) transformation.}
+
+\item{check.input}{Logical indicating whether to check the function input values for formatting or 
+entry errors (default TRUE).}
 }
 \value{
 Returns a (K+1) dimensional array containing the longitudinal UniFrac dissimilarities 

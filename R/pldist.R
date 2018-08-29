@@ -63,7 +63,7 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree 
     ## Calculate paired/longitudinal UniFrac dissimilarities 
     if (is.null(tree)) stop("Tree is required for UniFrac family metrics.")
     if (!is.rooted(tree)) stop("Rooted phylogenetic tree required!") 
-    D <- LUniFrac(otu.tab = otus, tree = tree, gam = gam, metadata = metadata, paired = paired)
+    D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)
   } 
   
   if (paired) {

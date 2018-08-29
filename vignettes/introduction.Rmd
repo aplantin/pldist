@@ -47,7 +47,7 @@ Currently, the package may only be downloaded and installed from GitHub using th
 
 ```{r installation-instructions}
 # only run if you don't have devtools installed 
-# install.packages("devtools"); library(devtools) 
+#install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
 ``` 
 
@@ -79,24 +79,42 @@ The data transformation function is `pltransform`. The transformations are provi
 
 Required function input consists of: 
 
-    - An OTU matrix with one row per sample and one column per OTU; row names should be unique sample identifiers 
-    - Sample metadata, consisting of: 
-        + Subject identifiers, with column name "subjID". 
-        + Sample identifiers, with column name "sampID". These must exactly match the row names of the OTU matrix. 
-        + An indicator of time or group, with column name "time". For paired data, this may take any two unique values. For longitudinal data, as.numeric() must give the proper levels with proper spacing; in the vast majority of cases, this column should be a numerical variable indicating time.
-    - Logical indicating whether the data are paired 
-    - Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred. 
+- An OTU matrix with one row per sample and one column per OTU; row names should be unique sample identifiers 
+- Sample metadata, consisting of: 
+    + Subject identifiers, with column name "subjID". 
+    + Sample identifiers, with column name "sampID". These must exactly match the row names of the OTU matrix. 
+    + An indicator of time or group, with column name "time". For paired data, this may take any two unique values. For longitudinal data, as.numeric() must give the proper levels with proper spacing; in the vast majority of cases, this column should be a numerical variable indicating time.
+- Logical indicating whether the data are paired 
+- Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred. 
     
-The output includes a qualitative (binary) transformation and a quantitative transformation. 
+The output consists of a list with components: 
+
+- Transformed data (accessible by res$tsf.data), a list with components 
+    + dat.binary: data matrix following qualitative/binary transformation (as described in the later section [Transformations and Dissimilarities]) 
+    + dat.quant: data matrix following quantitative transformation (again, as described later) 
+    + avg.prop: average proportion of each OTU for each subject
+- Type of transformations used (paired vs. longitudinal), accessible by res$type.  
 
 ```{r transform} 
-#pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
-``` 
 
-### Non-Phylogenetic Distances 
+``` 
 
 ### UniFrac Family Distances 
 
+The paired and longitudinal UniFrac family distances/dissimilarities, collectively referred to as LUniFrac, may be accessed using the `LUniFrac` function, shown below, or using the overall distance function `pldist`, demonstrated in the next section. 
+
+```{r lunifrac} 
+
+```
+
+
+### Non-Phylogenetic Distances 
+
+The primary, general form of the distance function is `pldist`. 
+
+```{r pldist}
+
+```
 
 
 ## Transformations and Dissimilarities

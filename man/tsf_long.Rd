@@ -2,7 +2,7 @@
 % Please edit documentation in R/pltransform.R
 \name{tsf_long}
 \alias{tsf_long}
-\title{tsf_paired}
+\title{tsf_long}
 \usage{
 tsf_long(otus, metadata)
 }

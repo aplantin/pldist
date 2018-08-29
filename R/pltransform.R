@@ -19,6 +19,8 @@
 #'     \item{dat.quant}{n x p matrix of data after paired, quantitative transformation} 
 #'     \item{avg.prop}{n x p matrix with overall average proportion of each taxon} 
 #' 
+#' @export
+#' 
 tsf_paired <- function(otus, metadata) {
   ## Prepare output data frame 
   n <- length(unique(metadata$subjID))
@@ -39,7 +41,7 @@ tsf_paired <- function(otus, metadata) {
   return(list(dat.binary = out.binary, dat.quant = out.quant, avg.prop = out.avgprop))   
 } 
 
-#' tsf_paired 
+#' tsf_long 
 #' 
 #' OTU transformation for longitudinal data. Computes average within-subject change 
 #'     (in presence for qualitative metrics, abundance for quantitative metrics) 
@@ -59,7 +61,9 @@ tsf_paired <- function(otus, metadata) {
 #'     \item{dat.binary}{n x p matrix of data after longitudinal, binary/qualitative transformation} 
 #'     \item{dat.quant}{n x p matrix of data after longitudinal, quantitative transformation} 
 #'     \item{avg.prop}{n x p matrix with overall average proportion of each taxon} 
-#' 
+#'  
+#' @export
+#'  
 tsf_long <- function(otus, metadata) {
   ## Prepare output data frame
   n <- length(unique(metadata$subjID))
@@ -113,6 +117,8 @@ tsf_long <- function(otus, metadata) {
 #' 
 #' @return n x p matrix of OTU proportions.  
 #' 
+#' @export 
+#' 
 counts2props <- function(x) {
   return(t(apply(x, 1, FUN = function(y) y/sum(y))))
 }
@@ -121,7 +127,7 @@ counts2props <- function(x) {
 
 
 
-#' tsf_paired 
+#' pltransform 
 #' 
 #' OTU transformation for longitudinal data. Computes average within-subject change 
 #'     (in presence for qualitative metrics, abundance for quantitative metrics) 
@@ -142,10 +148,9 @@ counts2props <- function(x) {
 #' 
 #' @return List with the following elements. Both data matrices have subject identifiers 
 #'     as row names and OTU identifiers as column names.  
-#'     \item{tsf.data}{List with 3 elements: 
-#'         (1) dat.binary: n x p matrix of data after longitudinal, binary/qualitative transformation 
-#'         (2) dat.quant: n x p matrix of data after longitudinal, quantitative transformation
-#'         (3) avg.prop: n x p matrix with overall average proportion of each taxon }
+#'     \item{dat.binary}{n x p matrix of data after longitudinal, binary/qualitative transformation} 
+#'     \item{dat.quant}{n x p matrix of data after longitudinal, quantitative transformation}
+#'     \item{avg.prop}{n x p matrix with overall average proportion of each taxon}
 #'     \item{type}{Type of transformation that was used (paired, balanced longitudinal, 
 #'     unbalanced longitudinal) with a warning if unbalanced longitudinal.} 
 #'     
@@ -174,7 +179,7 @@ pltransform <- function(otus, metadata, paired, check.input = TRUE) {
     }
    
   ## return 
-  return(list(tsf.data = res, type = type))
+  return(list(dat.binary = res$dat.binary, dat.quant = res$dat.quant, avg.prop = res$avg.prop, type = type))
 }
 
 

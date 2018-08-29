@@ -69,9 +69,9 @@ LUniFrac <- function(otu.tab, tree, gam = c(0, 0.5, 1), metadata, paired) {
   
   ### Step 1: calculate within-subject distance data
   if (paired) {
-    tsf.dat <- pltransform(otus = t(cum), metadata = metadata, paired = TRUE, check.input = FALSE)$tsf.data 
+    tsf.dat <- pltransform(otus = t(cum), metadata = metadata, paired = TRUE, check.input = FALSE)
   } else {
-    tsf.dat <- pltransform(otus = t(cum), metadata = metadata, paired = FALSE, check.input = FALSE)$tsf.data 
+    tsf.dat <- pltransform(otus = t(cum), metadata = metadata, paired = FALSE, check.input = FALSE)
   }
   cum.avg <- t(tsf.dat$avg.prop)
   cum.unw <- t(tsf.dat$dat.binary)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pltransform.R
 \name{pltransform}
 \alias{pltransform}
-\title{tsf_paired}
+\title{pltransform}
 \usage{
 pltransform(otus, metadata, paired, check.input = TRUE)
 }
@@ -26,10 +26,9 @@ unique time points/identifiers for each subject or pair.}
 \value{
 List with the following elements. Both data matrices have subject identifiers 
     as row names and OTU identifiers as column names.  
-    \item{tsf.data}{List with 3 elements: 
-        (1) dat.binary: n x p matrix of data after longitudinal, binary/qualitative transformation 
-        (2) dat.quant: n x p matrix of data after longitudinal, quantitative transformation
-        (3) avg.prop: n x p matrix with overall average proportion of each taxon }
+    \item{dat.binary}{n x p matrix of data after longitudinal, binary/qualitative transformation} 
+    \item{dat.quant}{n x p matrix of data after longitudinal, quantitative transformation}
+    \item{avg.prop}{n x p matrix with overall average proportion of each taxon}
     \item{type}{Type of transformation that was used (paired, balanced longitudinal, 
     unbalanced longitudinal) with a warning if unbalanced longitudinal.}
 }

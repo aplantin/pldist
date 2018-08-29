@@ -41,24 +41,25 @@ paired.otus[1:4,1:4]
 paired.meta[1:4, ]
 
 # Gower distance, paired & quantitative transformation 
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "gower")
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "gower")$D
 
 # Gower distance, paired & qualitative/binary transformation 
-pldist(paired.otus, paired.meta, paired = TRUE, binary = TRUE, method = "gower")
+pldist(paired.otus, paired.meta, paired = TRUE, binary = TRUE, method = "gower")$D
 
 # Gower distance, longitudinal & quantitative transformation 
-pldist(bal.long.otus, bal.long.meta, paired = FALSE, binary = FALSE, method = "gower")
+pldist(bal.long.otus, bal.long.meta, paired = FALSE, binary = FALSE, method = "gower")$D
 
 # Gower distance, longitudinal & qualitative/binary transformation 
-pldist(bal.long.otus, bal.long.meta, paired = FALSE, binary = TRUE, method = "gower")
+pldist(bal.long.otus, bal.long.meta, paired = FALSE, binary = TRUE, method = "gower")$D
 
 # Other distances 
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "bray")
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "kulczynski")
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccard")
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "bray")$D
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "kulczynski")$D
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccard")$D
 
 # UniFrac also requires a phylogenetic tree and gamma values 
 # (Gamma controls weight placed on abundant lineages) 
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
+    method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
 ``` 
 

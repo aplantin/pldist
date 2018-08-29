@@ -83,22 +83,22 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p><code>pldist</code> is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although use for highly unbalanced designs is not recommended.</p>
+<p><code>pldist</code> is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although applying these methods in the context of highly unbalanced designs is not recommended.</p>
 <p>The author and maintainer of the <code>pldist</code> R package is Anna Plantinga.</p>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>Currently, the package may only be downloaded and installed from GitHub using the <code>devtools</code> package. Type the following command in your R console:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only run if you don't have devtools installed </span>
-<span class="co"># install.packages(&quot;devtools&quot;) </span>
+<span class="co"># install.packages(&quot;devtools&quot;); library(devtools) </span>
 devtools::<span class="kw">install_github</span>(<span class="st">&quot;aplantin/pldist&quot;</span>)
 <span class="co">#&gt; Downloading GitHub repo aplantin/pldist@master</span>
 <span class="co">#&gt; from URL https://api.github.com/repos/aplantin/pldist/zipball/master</span>
 <span class="co">#&gt; Installing pldist</span>
 <span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
 <span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
-<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpIBC5zs/devtools1089fe059936/aplantin-pldist-79df566'  \</span>
-<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpjWUnpz/Rinst1088f571d9e28'  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpnxxTMU/devtools10cd965a6403d/aplantin-pldist-d468351'  \</span>
+<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/Rtmp4Iufzf/Rinst10cc922531a5c'  \</span>
 <span class="co">#&gt;   --install-tests</span>
 <span class="co">#&gt; </span></code></pre>
 </div>
@@ -116,8 +116,16 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;aplantin
 <div id="data-transformations" class="section level3">
 <h3>Data Transformations</h3>
 <p>The data transformation function is <code>pltransform</code>. The transformations are provided as a separate function so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. This function <strong>does not</strong> need to be called prior to utilizing the distance function; all transformations (and input checking) are included within the distance function.</p>
-<p>The output includes a qualitative (binary)</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#pltransform(paired.otus, paired.metadata, paired = TRUE, check.input = TRUE)</span></code></pre>
+<p>Required function input consists of:</p>
+<pre><code>- An OTU matrix with one row per sample and one column per OTU; row names should be unique sample identifiers 
+- Sample metadata, consisting of: 
+    + Subject identifiers, with column name &quot;subjID&quot;. 
+    + Sample identifiers, with column name &quot;sampID&quot;. These must exactly match the row names of the OTU matrix. 
+    + An indicator of time or group, with column name &quot;time&quot;. For paired data, this may take any two unique values. For longitudinal data, as.numeric() must give the proper levels with proper spacing; in the vast majority of cases, this column should be a numerical variable indicating time.
+- Logical indicating whether the data are paired 
+- Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred. </code></pre>
+<p>The output includes a qualitative (binary) transformation and a quantitative transformation.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)</span></code></pre>
 </div>
 <div id="non-phylogenetic-distances" class="section level3">
 <h3>Non-Phylogenetic Distances</h3>

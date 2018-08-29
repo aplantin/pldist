@@ -16,6 +16,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
 NeedsCompilation: no
-Packaged: 2018-08-29 00:55:03 UTC; anna
+Packaged: 2018-08-29 01:08:30 UTC; anna
 Suggests: knitr, rmarkdown, testthat, devtools
 VignetteBuilder: knitr

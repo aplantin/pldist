@@ -149,6 +149,7 @@ counts2props <- function(x) {
 #'     \item{type}{Type of transformation that was used (paired, balanced longitudinal, 
 #'     unbalanced longitudinal) with a warning if unbalanced longitudinal.} 
 #'     
+#' @export 
 #' 
 pltransform <- function(otus, metadata, paired, check.input = TRUE) {
   if (check.input) {

@@ -23,7 +23,6 @@
 #'    matrix may be accessed by result[,,"d_UW"], and the generalized dissimilarities by result[,,"d_G"] 
 #'    where G is the particular choice of gamma.
 #' 
-#' 
 #' @export
 #' 
 LUniFrac <- function(otu.tab, tree, gam = c(0, 0.5, 1), metadata, paired) {

@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-`pldist` is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although use for highly unbalanced designs is not recommended. 
+`pldist` is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although applying these methods in the context of highly unbalanced designs is not recommended. 
 
 The author and maintainer of the `pldist` R package is Anna Plantinga. 
 
@@ -47,7 +47,7 @@ Currently, the package may only be downloaded and installed from GitHub using th
 
 ```{r installation-instructions}
 # only run if you don't have devtools installed 
-# install.packages("devtools") 
+# install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
 ``` 
 
@@ -77,10 +77,20 @@ data("unbal.long.otus"); data("unbal.long.meta")
 
 The data transformation function is `pltransform`. The transformations are provided as a separate function so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. This function **does not** need to be called prior to utilizing the distance function; all transformations (and input checking) are included within the distance function. 
 
-The output includes a qualitative (binary) 
+Required function input consists of: 
+
+    - An OTU matrix with one row per sample and one column per OTU; row names should be unique sample identifiers 
+    - Sample metadata, consisting of: 
+        + Subject identifiers, with column name "subjID". 
+        + Sample identifiers, with column name "sampID". These must exactly match the row names of the OTU matrix. 
+        + An indicator of time or group, with column name "time". For paired data, this may take any two unique values. For longitudinal data, as.numeric() must give the proper levels with proper spacing; in the vast majority of cases, this column should be a numerical variable indicating time.
+    - Logical indicating whether the data are paired 
+    - Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred. 
+    
+The output includes a qualitative (binary) transformation and a quantitative transformation. 
 
 ```{r transform} 
-#pltransform(paired.otus, paired.metadata, paired = TRUE, check.input = TRUE)
+#pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
 ``` 
 
 ### Non-Phylogenetic Distances 

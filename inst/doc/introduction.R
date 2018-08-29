@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 
 ## ----installation-instructions-------------------------------------------
 # only run if you don't have devtools installed 
-# install.packages("devtools") 
+# install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
 
 ## ----load----------------------------------------------------------------
@@ -19,7 +19,7 @@ data("bal.long.otus"); data("bal.long.meta")
 data("unbal.long.otus"); data("unbal.long.meta")
 
 ## ----transform-----------------------------------------------------------
-#pltransform(paired.otus, paired.metadata, paired = TRUE, check.input = TRUE)
+#pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
 
 ## ----gen-tree------------------------------------------------------------
 # tree tip names must match column names in OTU table

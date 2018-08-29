@@ -1,501 +1,290 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Outline</title>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
-  }
-};
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Styles for R syntax highlighter -->
+<meta name="author" content="Anna Plantinga" />
+
+<meta name="date" content="2018-08-28" />
+
+<title>Introduction to pldist</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: #990073
-   }
-
-   pre .number {
-     color: #099;
-   }
-
-   pre .comment {
-     color: #998;
-     font-style: italic
-   }
-
-   pre .keyword {
-     color: #900;
-     font-weight: bold
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: #d14;
-   }
-</style>
-
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
-</script>
-
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
-}
-
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 {
-   font-size:2.2em;
-}
-
-h2 {
-   font-size:1.8em;
-}
-
-h3 {
-   font-size:1.4em;
-}
-
-h4 {
-   font-size:1.0em;
-}
-
-h5 {
-   font-size:0.9em;
-}
-
-h6 {
-   font-size:0.8em;
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre, img {
-  max-width: 100%;
-}
-pre {
-  overflow-x: auto;
-}
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
-}
-
-code[class] {
-  background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
-}
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
 </style>
 
 
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%7D%0Apre%20%7B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
 <body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to pldist</h1>
+<h4 class="author"><em>Anna Plantinga</em></h4>
+<h4 class="date"><em>2018-08-28</em></h4>
+
+
+
+<div id="outline" class="section level2">
 <h2>Outline</h2>
-
 <ul>
-<li>[Introduction] </li>
-<li>[Installation]</li>
-<li>[Usage Guide]
-
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage-guide">Usage Guide</a>
 <ul>
-<li>[Data Transformations] </li>
-<li>[Non-Phylogenetic Distances] </li>
-<li>[UniFrac Family Distances] </li>
+<li><a href="#data-transformations">Data Transformations</a></li>
+<li><a href="#non-phylogenetic-distances">Non-Phylogenetic Distances</a></li>
+<li><a href="#unifrac-family-distances">UniFrac Family Distances</a></li>
 </ul></li>
-<li>[Transformations and Dissimilarities] 
-
+<li><a href="#transformations-and-dissimilarities">Transformations and Dissimilarities</a>
 <ul>
-<li>[Transformations] </li>
-<li>[Bray-Curtis]</li>
-<li>[Jaccard] </li>
-<li>[Kulczynski] </li>
-<li>[Gower] </li>
-<li>[Unweighted UniFrac] </li>
-<li>[Generalized UniFrac]</li>
+<li><a href="#transformations">Transformations</a></li>
+<li><a href="#bray-curtis">Bray-Curtis</a></li>
+<li><a href="#jaccard">Jaccard</a></li>
+<li><a href="#kulczynski">Kulczynski</a></li>
+<li><a href="#gower">Gower</a></li>
+<li><a href="#unweighted-unifrac">Unweighted UniFrac</a></li>
+<li><a href="#generalized-unifrac">Generalized UniFrac</a></li>
 </ul></li>
-<li>[Appendix: Generating Test Data]</li>
-<li>[References] </li>
+<li><a href="#appendix-generating-test-data">Appendix: Generating Test Data</a></li>
+<li><a href="#references">References</a></li>
 </ul>
-
+</div>
+<div id="introduction" class="section level2">
 <h2>Introduction</h2>
-
-<p><code>pldist</code> is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although use for highly unbalanced designs is not recommended. </p>
-
-<p>The author and maintainer of the <code>pldist</code> R package is Anna Plantinga. </p>
-
+<p><code>pldist</code> is a package that allows distance-based analysis of paired and longitudinal microbiome data. In particular, the package supports both paired and longitudinal versions of unweighted UniFrac, generalized UniFrac, Bray-Curtis, Jaccard, Gower, and Kulczynski distances or dissimilarities. Functions implementing the transformations that underlie these distances are also provided so that transformed OTU data may be included in analyses beyond distance-based methods. The code can handle paired data, balanced longitudinal data, and unbalanced longitudinal data, although use for highly unbalanced designs is not recommended.</p>
+<p>The author and maintainer of the <code>pldist</code> R package is Anna Plantinga.</p>
+</div>
+<div id="installation" class="section level2">
 <h2>Installation</h2>
-
-<p>Currently, the package may only be downloaded and installed from GitHub using the <code>devtools</code> package. Type the following command in your R console: </p>
-
-<pre><code class="r"># only run if you don&#39;t have devtools installed 
-# install.packages(&quot;devtools&quot;) 
-library(devtools) 
-devtools::install_github(&quot;aplantin/pldist&quot;)
-#&gt; Downloading GitHub repo aplantin/pldist@master
-#&gt; from URL https://api.github.com/repos/aplantin/pldist/zipball/master
-#&gt; Installing pldist
-#&gt; &#39;/Library/Frameworks/R.framework/Resources/bin/R&#39; --no-site-file  \
-#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \
-#&gt;   &#39;/private/var/folders/v3/mjzl4t5517j0vl995n6szx9w0000gq/T/RtmprOOmFR/devtools10a2911e6b79a/aplantin-pldist-b5ea8e0&#39;  \
-#&gt;   --library=&#39;/private/var/folders/v3/mjzl4t5517j0vl995n6szx9w0000gq/T/RtmpOI5gkd/Rinst10a133e6de4e3&#39;  \
-#&gt;   --install-tests
-#&gt; 
-</code></pre>
-
+<p>Currently, the package may only be downloaded and installed from GitHub using the <code>devtools</code> package. Type the following command in your R console:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only run if you don't have devtools installed </span>
+<span class="co"># install.packages(&quot;devtools&quot;) </span>
+devtools::<span class="kw">install_github</span>(<span class="st">&quot;aplantin/pldist&quot;</span>)
+<span class="co">#&gt; Downloading GitHub repo aplantin/pldist@master</span>
+<span class="co">#&gt; from URL https://api.github.com/repos/aplantin/pldist/zipball/master</span>
+<span class="co">#&gt; Installing pldist</span>
+<span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
+<span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpIBC5zs/devtools1089fe059936/aplantin-pldist-79df566'  \</span>
+<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpjWUnpz/Rinst1088f571d9e28'  \</span>
+<span class="co">#&gt;   --install-tests</span>
+<span class="co">#&gt; </span></code></pre>
+</div>
+<div id="usage-guide" class="section level2">
 <h2>Usage Guide</h2>
-
-<p>This section provides an overview of the main components of the package and usage basics. We will briefly outline the main functions, see examples of function usage, and examine the output. </p>
-
-<p>First, we load the <code>pldist</code> package. </p>
-
-<pre><code class="r">library(pldist)
-</code></pre>
-
-<p>The primary function in this package calculates distance (or dissimilarity) matrices for all subjects in a dataset. Users can specify paired versus longitudinal, qualitative versus quantitative analysis, and the desired distance metric via function arguments. </p>
-
-<p>We demonstrate function behavior using simulated data. The code to generate this data is included in the Appendix. </p>
-
-<pre><code class="r">data(&quot;sim.tree&quot;)
-data(&quot;paired.otus&quot;); data(&quot;paired.meta&quot;)
-data(&quot;bal.long.otus&quot;); data(&quot;bal.long.meta&quot;)
-data(&quot;unbal.long.otus&quot;); data(&quot;unbal.long.meta&quot;)
-</code></pre>
-
+<p>This section provides an overview of the main components of the package and usage basics. We will briefly outline the main functions, see examples of function usage, and examine the output.</p>
+<p>First, we load the <code>pldist</code> package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pldist)</code></pre>
+<p>The primary function in this package calculates distance (or dissimilarity) matrices for all subjects in a dataset. Users can specify paired versus longitudinal, qualitative versus quantitative analysis, and the desired distance metric via function arguments.</p>
+<p>We demonstrate function behavior using simulated data. The code to generate this data is included in the Appendix.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;sim.tree&quot;</span>)
+<span class="kw">data</span>(<span class="st">&quot;paired.otus&quot;</span>); <span class="kw">data</span>(<span class="st">&quot;paired.meta&quot;</span>)
+<span class="kw">data</span>(<span class="st">&quot;bal.long.otus&quot;</span>); <span class="kw">data</span>(<span class="st">&quot;bal.long.meta&quot;</span>)
+<span class="kw">data</span>(<span class="st">&quot;unbal.long.otus&quot;</span>); <span class="kw">data</span>(<span class="st">&quot;unbal.long.meta&quot;</span>)</code></pre>
+<div id="data-transformations" class="section level3">
 <h3>Data Transformations</h3>
-
-<p>The data transformation function is <code>pltransform</code>. The transformations are provided as a separate function so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. This function <strong>does not</strong> need to be called prior to utilizing the distance function; all transformations (and input checking) are included within the distance function. </p>
-
-<p>The output includes a qualitative (binary) </p>
-
-<pre><code class="r">#pltransform(paired.otus, paired.metadata, paired = TRUE, check.input = TRUE)
-</code></pre>
-
+<p>The data transformation function is <code>pltransform</code>. The transformations are provided as a separate function so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. This function <strong>does not</strong> need to be called prior to utilizing the distance function; all transformations (and input checking) are included within the distance function.</p>
+<p>The output includes a qualitative (binary)</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#pltransform(paired.otus, paired.metadata, paired = TRUE, check.input = TRUE)</span></code></pre>
+</div>
+<div id="non-phylogenetic-distances" class="section level3">
 <h3>Non-Phylogenetic Distances</h3>
-
+</div>
+<div id="unifrac-family-distances" class="section level3">
 <h3>UniFrac Family Distances</h3>
-
+</div>
+</div>
+<div id="transformations-and-dissimilarities" class="section level2">
 <h2>Transformations and Dissimilarities</h2>
-
-<p>In this section, we provide the mathematical definitions for the transformations and distances/dissimilarities included in the package, along with a few notes about features of particular metrics. Throughout, \(m\) is the number of OTUs measured (generally indexed by \(k\)), \(q\) is the number of time points observed per subject (generally indexed by \(l\)), and \(p_k^{(X, l)}\) is the relative abundance (proportion) of taxon \(k\) for subject \(X\) at time \(l\). The latter is abbreviated to \(p_k^X\) for single time point metrics. </p>
-
+<p>In this section, we provide the mathematical definitions for the transformations and distances/dissimilarities included in the package, along with a few notes about features of particular metrics. Throughout, <span class="math">\(m\)</span> is the number of OTUs measured (generally indexed by <span class="math">\(k\)</span>), <span class="math">\(q\)</span> is the number of time points observed per subject (generally indexed by <span class="math">\(l\)</span>), and <span class="math">\(p_k^{(X, l)}\)</span> is the relative abundance (proportion) of taxon <span class="math">\(k\)</span> for subject <span class="math">\(X\)</span> at time <span class="math">\(l\)</span>. The latter is abbreviated to <span class="math">\(p_k^X\)</span> for single time point metrics.</p>
+<div id="transformations" class="section level3">
 <h3>Transformations</h3>
-
-<p>We introduce four transformations for OTU abundance data, depending on whether the data are paired or longitudinal and whether the user prefers a quantitative analysis (changes in taxon abundance) or qualitative analysis (changes in taxon presence/absence).  </p>
-
-<ol>
-<li>Paired, Qualitative: \[
-d_k^A(t_1, t_2) = \frac{1}{2} \cdot \left[ I\left(p_k^{(A, t_1)} > 0\right) - I\left(p_k^{(A, t_2)} > 0\right) \right] \in \lbrace -0.5, 0, 0.5 \rbrace \]</li>
-<li>Paired, Quantitative: \[ 
-d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] \]</li>
-<li>Longitudinal, Qualitative: \[ d_k^A(t_1, \ldots, t_q)  = \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert I(p_k^{A,t_{l+1}} > 0) - I(p_k^{A, t_l} > 0) \right\rvert \]</li>
-<li>Longitudinal, Quantitative: \[ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert \]</li>
+<p>We introduce four transformations for OTU abundance data, depending on whether the data are paired or longitudinal and whether the user prefers a quantitative analysis (changes in taxon abundance) or qualitative analysis (changes in taxon presence/absence).</p>
+<ol style="list-style-type: decimal">
+<li>Paired, Qualitative: <span class="math">\[
+d_k^A(t_1, t_2) = \frac{1}{2} \cdot \left[ I\left(p_k^{(A, t_1)} &gt; 0\right) - I\left(p_k^{(A, t_2)} &gt; 0\right) \right] \in \lbrace -0.5, 0, 0.5 \rbrace \]</span></li>
+<li>Paired, Quantitative: <span class="math">\[ 
+d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] \]</span></li>
+<li>Longitudinal, Qualitative: <span class="math">\[ d_k^A(t_1, \ldots, t_q)  = \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert I(p_k^{A,t_{l+1}} &gt; 0) - I(p_k^{A, t_l} &gt; 0) \right\rvert \]</span></li>
+<li>Longitudinal, Quantitative: <span class="math">\[ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert \]</span></li>
 </ol>
-
-<p>There are several items to note in comparing these transformations. </p>
-
+<p>There are several items to note in comparing these transformations.</p>
 <ul>
-<li>The paired transformation is not equivalent to the longitudinal transformation applied at two time points: the paired transformations incorporate direction of change, whereas the longitudinal versions only summarize absolute magnitude of change. </li>
-<li>Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups. </li>
-<li>Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same \(d_k\) as a change from 0.02 to 0.04. 
-
+<li>The paired transformation is not equivalent to the longitudinal transformation applied at two time points: the paired transformations incorporate direction of change, whereas the longitudinal versions only summarize absolute magnitude of change.</li>
+<li>Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups.</li>
+<li>Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same <span class="math">\(d_k\)</span> as a change from 0.02 to 0.04.
 <ul>
-<li>In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter \(\gamma\). No such adjustments are currently available for other dissimilarities. </li>
+<li>In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter <span class="math">\(\gamma\)</span>. No such adjustments are currently available for other dissimilarities.</li>
 </ul></li>
 </ul>
-
+</div>
+<div id="bray-curtis" class="section level3">
 <h3>Bray-Curtis</h3>
-
-<p>The Bray-Curtis dissimilarity is a commonly used non-phylogenetic ecological dissimilarity. It is most commonly quantitative. The usual definition for a single time point is 
-\[ D_{AB} = \frac{1}{2} \sum_{k=1}^m \lvert p_k^A - p_k^B \rvert. \]
-Intuitively, this is the proportion of each taxon that is found in only one subject. The binary version of this metric is 
-\[ D_{AB} = 1 - \frac{2|A \cap B|}{|A| + |B|}, \]
-which translates to the number of species found in only one subject relative to the total for both subjects. </p>
-
-<p>The corresponding dissimilarity for both paired and longitudinal settings is defined as 
-\[ D_{AB} = \frac{1}{m} \sum_{k=1}^m \lvert d_k^A - d_k^B \rvert, \]
-summarizing the proportion of change for each taxon that occurs only in one subject, where \(d_k^X\) is defined using the appropriate transformation for the setting (paired/longitudinal, quantitative/qualitative). </p>
-
+<p>The Bray-Curtis dissimilarity is a commonly used non-phylogenetic ecological dissimilarity. It is most commonly quantitative. The usual definition for a single time point is <span class="math">\[ D_{AB} = \frac{1}{2} \sum_{k=1}^m \lvert p_k^A - p_k^B \rvert. \]</span> Intuitively, this is the proportion of each taxon that is found in only one subject. The binary version of this metric is <span class="math">\[ D_{AB} = 1 - \frac{2|A \cap B|}{|A| + |B|}, \]</span> which translates to the number of species found in only one subject relative to the total for both subjects.</p>
+<p>The corresponding dissimilarity for both paired and longitudinal settings is defined as <span class="math">\[ D_{AB} = \frac{1}{m} \sum_{k=1}^m \lvert d_k^A - d_k^B \rvert, \]</span> summarizing the proportion of change for each taxon that occurs only in one subject, where <span class="math">\(d_k^X\)</span> is defined using the appropriate transformation for the setting (paired/longitudinal, quantitative/qualitative).</p>
+</div>
+<div id="jaccard" class="section level3">
 <h3>Jaccard</h3>
-
-<p>The Jaccard distance is another common non-phylogenetic metric. This one is most often qualitative (computed on presence/absence data). Different generalized Jaccard distances exist as quantitative variations of the standard metric; the quantitative paired and longitudinal versions are based on the quantitative Jaccard metric implemented in <code>vegan</code>. </p>
-
-<p>The single timepoint qualitative Jaccard metric is defined as 
-\[ D_{AB} = 1 - \frac{|A \cap B|}{|A \cup B|} \] 
-and the corresponding quantitative distance is 
-\[D_{AB} = 1 - \frac{\sum_k \min(p_k^A, p_k^B)}{\sum_k \max(p_k^A, p_k^B)}. \]
-The Jaccard similarity is the number (or relative abundances) of taxa shared between subjects divided by the total number of unique taxa observed, and this is subtracted from one to obtain the distance. </p>
-
-<p>For paired data, a similar concept is to look at the number (or relative abundances) of changes in taxon abundance that are shared between subjects divided by the total observed changes. Hence, the qualitative version is 
-\[ D_{AB} = 1 - \frac{\sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0)}{\sum_k \left[ I(d_k^A \neq 0) \mbox{ or } I(d_k^B \neq 0) \right] } \]
-and the quantitative version 
-\[ D_{AB} = 1 - \frac{\sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace}{\sum_k \max(|d_k^A|, |d_k^b|)}\]
-where sgn(\(\cdot\)) is a generalized sign operator such that \(\mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B)\) is TRUE if either \(d_k^A\) or \(d_k^B\) is zero or if both have the same non-zero sign. </p>
-
-<p>In the longitudinal case, both the qualitative and quantitative metric are defined as 
-\[ D_{AB} = 1 - \frac{\sum_k \min(d_k^A, d_k^B)}{\sum_k \max(d_k^A, d_k^B)}. \] </p>
-
+<p>The Jaccard distance is another common non-phylogenetic metric. This one is most often qualitative (computed on presence/absence data). Different generalized Jaccard distances exist as quantitative variations of the standard metric; the quantitative paired and longitudinal versions are based on the quantitative Jaccard metric implemented in <code>vegan</code>.</p>
+<p>The single timepoint qualitative Jaccard metric is defined as <span class="math">\[ D_{AB} = 1 - \frac{|A \cap B|}{|A \cup B|} \]</span> and the corresponding quantitative distance is <span class="math">\[D_{AB} = 1 - \frac{\sum_k \min(p_k^A, p_k^B)}{\sum_k \max(p_k^A, p_k^B)}. \]</span> The Jaccard similarity is the number (or relative abundances) of taxa shared between subjects divided by the total number of unique taxa observed, and this is subtracted from one to obtain the distance.</p>
+<p>For paired data, a similar concept is to look at the number (or relative abundances) of changes in taxon abundance that are shared between subjects divided by the total observed changes. Hence, the qualitative version is <span class="math">\[ D_{AB} = 1 - \frac{\sum_k I(d_k^A = d_k^B) I(d_k^A \neq 0)}{\sum_k \left[ I(d_k^A \neq 0) \mbox{ or } I(d_k^B \neq 0) \right] } \]</span> and the quantitative version <span class="math">\[ D_{AB} = 1 - \frac{\sum_k \min(|d_k^A|, |d_k^B|) \, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace}{\sum_k \max(|d_k^A|, |d_k^b|)}\]</span> where sgn(<span class="math">\(\cdot\)</span>) is a generalized sign operator such that <span class="math">\(\mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B)\)</span> is TRUE if either <span class="math">\(d_k^A\)</span> or <span class="math">\(d_k^B\)</span> is zero or if both have the same non-zero sign.</p>
+<p>In the longitudinal case, both the qualitative and quantitative metric are defined as <span class="math">\[ D_{AB} = 1 - \frac{\sum_k \min(d_k^A, d_k^B)}{\sum_k \max(d_k^A, d_k^B)}. \]</span></p>
+</div>
+<div id="kulczynski" class="section level3">
 <h3>Kulczynski</h3>
-
-<p>Each Kulczynski metric is essentially the numerator of the corresponding Jaccard metric. At a single time point, the qualitative Kulczynski distance is calculated as 
-\[  D_{AB} = 1 - \frac{1}{2} \left( \frac{|A \cap B|}{|A|} + \frac{|A \cap B|}{|B|} \right) \] 
-and the corresponding quantitative measure as 
-\[  D_{AB} = 1 - \sum_k \min(p_k^A, p_k^B) \] </p>
-
-<p>The paired versions are 
-\[ \mbox{Qualitative:  } \qquad D_{AB} = 1 - \frac{1}{m} \sum_k I(d_k^A = d_k^B) \] 
-and 
-\[ \mbox{Quantitative:  } \qquad  D_{AB} = 1 - \frac{1}{2} \sum_k \left(\frac{1}{\sum_k |d_k^A|} + \frac{1}{\sum_k |d_k^B|} \right) \min(|d_k^A|, |d_k^B|)\, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace. \] 
-Similarly, both qualitative and quantitative longitudinal versions may be calculated as 
-\[ D_{AB} = 1 - \frac{1}{2} \sum_k \left(\frac{1}{\sum_k d_k^A} + \frac{1}{\sum_k d_k^B} \right) \min(d_k^A, d_k^B). \] </p>
-
+<p>Each Kulczynski metric is essentially the numerator of the corresponding Jaccard metric. At a single time point, the qualitative Kulczynski distance is calculated as <span class="math">\[  D_{AB} = 1 - \frac{1}{2} \left( \frac{|A \cap B|}{|A|} + \frac{|A \cap B|}{|B|} \right) \]</span> and the corresponding quantitative measure as <span class="math">\[  D_{AB} = 1 - \sum_k \min(p_k^A, p_k^B) \]</span></p>
+<p>The paired versions are <span class="math">\[ \mbox{Qualitative:  } \qquad D_{AB} = 1 - \frac{1}{m} \sum_k I(d_k^A = d_k^B) \]</span> and <span class="math">\[ \mbox{Quantitative:  } \qquad  D_{AB} = 1 - \frac{1}{2} \sum_k \left(\frac{1}{\sum_k |d_k^A|} + \frac{1}{\sum_k |d_k^B|} \right) \min(|d_k^A|, |d_k^B|)\, I\lbrace \mbox{sgn}(d_k^A) = \mbox{sgn}(d_k^B) \rbrace. \]</span> Similarly, both qualitative and quantitative longitudinal versions may be calculated as <span class="math">\[ D_{AB} = 1 - \frac{1}{2} \sum_k \left(\frac{1}{\sum_k d_k^A} + \frac{1}{\sum_k d_k^B} \right) \min(d_k^A, d_k^B). \]</span></p>
+</div>
+<div id="gower" class="section level3">
 <h3>Gower</h3>
-
-<p>The qualitative Gower dissimilarity is 
-\[D_{AB} = \frac{|A| + |B| - 2|A \cap B|}{m},\]
-where \(q\) is the total number of OTUs, and the quantitative version is 
-\[D_{AB} = \frac{1}{m} \sum_k \frac{\lvert p_k^A - p_k^B \rvert}{\max p_k - \min p_k}. \] 
-The paired and longitudinal distances, both qualitative and quantitative, are defined as 
-\[ D_{AB} = \frac{1}{m} \sum_k \frac{\lvert d_k^A - d_k^B \rvert }{\max d_k - \min d_k}. \] 
-Note that the denominator normalizes the contribution from a particular taxon for a pair of individuals (A and B) by the largest observed pairwise dissimilarity with respect to that taxon (\(\mbox{max} d_k - 
-\mbox{min} d_k\)). </p>
-
+<p>The qualitative Gower dissimilarity is <span class="math">\[D_{AB} = \frac{|A| + |B| - 2|A \cap B|}{m},\]</span> where <span class="math">\(q\)</span> is the total number of OTUs, and the quantitative version is <span class="math">\[D_{AB} = \frac{1}{m} \sum_k \frac{\lvert p_k^A - p_k^B \rvert}{\max p_k - \min p_k}. \]</span> The paired and longitudinal distances, both qualitative and quantitative, are defined as <span class="math">\[ D_{AB} = \frac{1}{m} \sum_k \frac{\lvert d_k^A - d_k^B \rvert }{\max d_k - \min d_k}. \]</span> Note that the denominator normalizes the contribution from a particular taxon for a pair of individuals (A and B) by the largest observed pairwise dissimilarity with respect to that taxon (<span class="math">\(\mbox{max} d_k - \mbox{min} d_k\)</span>).</p>
+</div>
+<div id="unweighted-unifrac" class="section level3">
 <h3>Unweighted UniFrac</h3>
-
-<p>The UniFrac family of distances is very commonly used in microbiome association analysis, in part because they incorporate the phylogenetic tree that describes evolutionary relationships between the observed OTUs. The standard unweighted UniFrac distance (Lozupone and Knight, 2005) is defined as 
-\[ D_{AB} =  \frac{\sum_i b_i \lvert I(p_i^A > 0) - I(p_i^B > 0)\rvert}{\sum_i b_i} \] 
-where \(b_i\) is the length of branch \(i\) on the phylogenetic tree. In this setting, \(p_i^X\) are the proportions descending from branch \(i\) for subject \(X\). </p>
-
-<p>The paired and longitudinal version of this distance, using the qualitative transformations (paired or longitudinal, as desired), uses exactly the same distance calculated on the transformed data: 
-\[D_{AB} = \frac{\sum_i b_i \lvert d_i^A - d_i^B \rvert}{\sum_i b_i}.\]</p>
-
-<p>In the paired case, because direction of change matters, \(|d_i^A - d_i^B|\) will be 0.5 if taxon presence changed in only one subject, and it will be 1 if taxon presence changed in different directions for each subject (i.e., the taxon was gained between time points in one subject and lost in the other subject). </p>
-
-<p>In the longitudinal case, direction of change does not matter, so this metric essentially looks at how often the taxon was lost or gained between sequential time points for each subject (regardless of in which direction the change occurred). </p>
-
+<p>The UniFrac family of distances is very commonly used in microbiome association analysis, in part because they incorporate the phylogenetic tree that describes evolutionary relationships between the observed OTUs. The standard unweighted UniFrac distance (Lozupone and Knight, 2005) is defined as <span class="math">\[ D_{AB} =  \frac{\sum_i b_i \lvert I(p_i^A &gt; 0) - I(p_i^B &gt; 0)\rvert}{\sum_i b_i} \]</span> where <span class="math">\(b_i\)</span> is the length of branch <span class="math">\(i\)</span> on the phylogenetic tree. In this setting, <span class="math">\(p_i^X\)</span> are the proportions descending from branch <span class="math">\(i\)</span> for subject <span class="math">\(X\)</span>.</p>
+<p>The paired and longitudinal version of this distance, using the qualitative transformations (paired or longitudinal, as desired), uses exactly the same distance calculated on the transformed data: <span class="math">\[D_{AB} = \frac{\sum_i b_i \lvert d_i^A - d_i^B \rvert}{\sum_i b_i}.\]</span></p>
+<p>In the paired case, because direction of change matters, <span class="math">\(|d_i^A - d_i^B|\)</span> will be 0.5 if taxon presence changed in only one subject, and it will be 1 if taxon presence changed in different directions for each subject (i.e., the taxon was gained between time points in one subject and lost in the other subject).</p>
+<p>In the longitudinal case, direction of change does not matter, so this metric essentially looks at how often the taxon was lost or gained between sequential time points for each subject (regardless of in which direction the change occurred).</p>
+</div>
+<div id="generalized-unifrac" class="section level3">
 <h3>Generalized UniFrac</h3>
-
-<p>The generalized UniFrac distance, introduced in Chen et al. (2012), is defined as 
-\[ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (p_i^A + p_i^B)^\gamma \left\lvert \frac{p_i^A - p_i^B}{p_i^A + p_i^B} \right\rvert}{\sum_i b_i (p_i^A + p_i^B)^\gamma } \] 
-where the parameter \(\gamma \in [0,1]\), chosen by the user, changes the weight placed on abundant lineages: \(\gamma = 1\) results in high weight on abundant taxa, whereas \(\gamma = 0\) considers each difference relative to that taxon&#39;s overall abundance, weighting the contribution of rare and common taxa similarly. </p>
-
-<p>The paired and longitudinal variations on the generalized UniFrac distance, which we term LUniFrac, are defined via 
-\[ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma \lvert d_i^A - d_i^B \rvert} {\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma } \] 
-where \(\bar{p}_i^A = \frac{1}{q} \sum_{l=1}^{q} p_k^{A, t_l}\) is the within-subject average proportion descending from branch \(i\). Thus, as in the single time point version, contributions of changes in each branch/taxon are weighted by overall (average) taxon abundance with the weight modulated by \(\gamma \in [0,1]\). This is the only metric that incorporates both the original taxon proportions and the transformed data. </p>
-
+<p>The generalized UniFrac distance, introduced in Chen et al. (2012), is defined as <span class="math">\[ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (p_i^A + p_i^B)^\gamma \left\lvert \frac{p_i^A - p_i^B}{p_i^A + p_i^B} \right\rvert}{\sum_i b_i (p_i^A + p_i^B)^\gamma } \]</span> where the parameter <span class="math">\(\gamma \in [0,1]\)</span>, chosen by the user, changes the weight placed on abundant lineages: <span class="math">\(\gamma = 1\)</span> results in high weight on abundant taxa, whereas <span class="math">\(\gamma = 0\)</span> considers each difference relative to that taxon’s overall abundance, weighting the contribution of rare and common taxa similarly.</p>
+<p>The paired and longitudinal variations on the generalized UniFrac distance, which we term LUniFrac, are defined via <span class="math">\[ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma \lvert d_i^A - d_i^B \rvert} {\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma } \]</span> where <span class="math">\(\bar{p}_i^A = \frac{1}{q} \sum_{l=1}^{q} p_k^{A, t_l}\)</span> is the within-subject average proportion descending from branch <span class="math">\(i\)</span>. Thus, as in the single time point version, contributions of changes in each branch/taxon are weighted by overall (average) taxon abundance with the weight modulated by <span class="math">\(\gamma \in [0,1]\)</span>. This is the only metric that incorporates both the original taxon proportions and the transformed data.</p>
+</div>
+</div>
+<div id="appendix-generating-test-data" class="section level2">
 <h2>Appendix: Generating Test Data</h2>
-
-<p>All of the UniFrac-family distances require a rooted phylogenetic tree. We use <code>ape</code> to generate this tree. </p>
-
-<pre><code class="r"># tree tip names must match column names in OTU table
-gen.tree &lt;- function(seed, notus) {
-  set.seed(seed)
-  sim.tree = rtree(n=notus)
-  sim.tree$tip.label &lt;- paste(&quot;otu&quot;, sample(1:notus), sep = &quot;&quot;)
-  return(sim.tree)
-}
-</code></pre>
-
-<p>The following data generation function allows simulation of paired, balanced longitudinal, and unbalanced longitudinal data. Note that this data generation mechanism is for <strong>testing and demonstration purposes only</strong>. It does not yield a realistic distribution of OTU counts and should not be used for evaluation or comparison of methods. </p>
-
-<pre><code class="r"># Parameters: 
-#     nsubj: number of subjects 
-#     maxtimes: maximum number of time points 
-#         (use maxtimes=2 for paired data) 
-#     maxdiff: maximum difference between observed times 
-#         (use maxdiff = 1 for observation at consecutive time units) 
-#     balanced: logical indicating whether design should be balanced 
-#         (all subjects observed at the same time points)
-#     notus: number of observed OTUs 
-#     propzero: proportion of table cells that should be zero
-#         (microbiome data tends to have a high proportion of zeros) 
-#     maxct: maximum possible read count in a single cell
-gen.data &lt;- function(seed, nsubj, maxtimes, maxdiff, balanced, notus, propzero, maxct) {
-  set.seed(seed)
-  if (maxtimes == 2) {
-    ntimes &lt;- rep(2, nsubj) 
+<p>All of the UniFrac-family distances require a rooted phylogenetic tree. We use <code>ape</code> to generate this tree.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># tree tip names must match column names in OTU table</span>
+gen.tree &lt;-<span class="st"> </span>function(seed, notus) {
+  <span class="kw">set.seed</span>(seed)
+  sim.tree =<span class="st"> </span><span class="kw">rtree</span>(<span class="dt">n=</span>notus)
+  sim.tree$tip.label &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;otu&quot;</span>, <span class="kw">sample</span>(<span class="dv">1</span>:notus), <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+  <span class="kw">return</span>(sim.tree)
+}</code></pre>
+<p>The following data generation function allows simulation of paired, balanced longitudinal, and unbalanced longitudinal data. Note that this data generation mechanism is for <strong>testing and demonstration purposes only</strong>. It does not yield a realistic distribution of OTU counts and should not be used for evaluation or comparison of methods.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Parameters: </span>
+<span class="co">#     nsubj: number of subjects </span>
+<span class="co">#     maxtimes: maximum number of time points </span>
+<span class="co">#         (use maxtimes=2 for paired data) </span>
+<span class="co">#     maxdiff: maximum difference between observed times </span>
+<span class="co">#         (use maxdiff = 1 for observation at consecutive time units) </span>
+<span class="co">#     balanced: logical indicating whether design should be balanced </span>
+<span class="co">#         (all subjects observed at the same time points)</span>
+<span class="co">#     notus: number of observed OTUs </span>
+<span class="co">#     propzero: proportion of table cells that should be zero</span>
+<span class="co">#         (microbiome data tends to have a high proportion of zeros) </span>
+<span class="co">#     maxct: maximum possible read count in a single cell</span>
+gen.data &lt;-<span class="st"> </span>function(seed, nsubj, maxtimes, maxdiff, balanced, notus, propzero, maxct) {
+  <span class="kw">set.seed</span>(seed)
+  if (maxtimes ==<span class="st"> </span><span class="dv">2</span>) {
+    ntimes &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">2</span>, nsubj) 
   } else {
     if (balanced) {
-      ntimes &lt;- rep(sample(2:maxtimes)[1], nsubj)
+      ntimes &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">sample</span>(<span class="dv">2</span>:maxtimes)[<span class="dv">1</span>], nsubj)
     } else {
-      ntimes &lt;- sample(2:maxtimes, nsubj, replace = TRUE)
+      ntimes &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">2</span>:maxtimes, nsubj, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
     }
   }
-  ncells = sum(ntimes) * notus
-  nzero = floor(ncells*propzero)
-  toy.otus &lt;- matrix(0, nrow = sum(ntimes), ncol = notus)
-  while (any(c(apply(toy.otus, 1, FUN = function(x) all(x == 0)), 
-               apply(toy.otus, 2, FUN = function(x) all(x == 0))))) {
-    toy.otus &lt;- matrix(sample(c(sample(1:maxct, (ncells - nzero), replace = TRUE), rep(0, nzero))), 
-                       nrow = sum(ntimes), ncol = notus)
+  ncells =<span class="st"> </span><span class="kw">sum</span>(ntimes) *<span class="st"> </span>notus
+  nzero =<span class="st"> </span><span class="kw">floor</span>(ncells*propzero)
+  toy.otus &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> <span class="kw">sum</span>(ntimes), <span class="dt">ncol =</span> notus)
+  while (<span class="kw">any</span>(<span class="kw">c</span>(<span class="kw">apply</span>(toy.otus, <span class="dv">1</span>, <span class="dt">FUN =</span> function(x) <span class="kw">all</span>(x ==<span class="st"> </span><span class="dv">0</span>)), 
+               <span class="kw">apply</span>(toy.otus, <span class="dv">2</span>, <span class="dt">FUN =</span> function(x) <span class="kw">all</span>(x ==<span class="st"> </span><span class="dv">0</span>))))) {
+    toy.otus &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">sample</span>(<span class="kw">c</span>(<span class="kw">sample</span>(<span class="dv">1</span>:maxct, (ncells -<span class="st"> </span>nzero), <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="kw">rep</span>(<span class="dv">0</span>, nzero))), 
+                       <span class="dt">nrow =</span> <span class="kw">sum</span>(ntimes), <span class="dt">ncol =</span> notus)
   }
-  toy.props &lt;- counts2props(toy.otus) 
-  subjIDs &lt;- unlist(sapply(1:nsubj, FUN = function(i) {
-    rep(paste(&quot;subj&quot;, i, sep = &quot;&quot;), ntimes[i]) }, simplify = FALSE))
-  sampIDs &lt;- paste(unlist(sapply(1:nsubj, FUN = function(i) {
-    rep(paste(&quot;subj&quot;, i, sep = &quot;&quot;), ntimes[i]) }, simplify = FALSE)), 
-    unlist(sapply(1:nsubj, FUN = function(i) letters[1:ntimes[i]], simplify = FALSE)), sep = &quot;&quot;)
+  toy.props &lt;-<span class="st"> </span><span class="kw">counts2props</span>(toy.otus) 
+  subjIDs &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">sapply</span>(<span class="dv">1</span>:nsubj, <span class="dt">FUN =</span> function(i) {
+    <span class="kw">rep</span>(<span class="kw">paste</span>(<span class="st">&quot;subj&quot;</span>, i, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>), ntimes[i]) }, <span class="dt">simplify =</span> <span class="ot">FALSE</span>))
+  sampIDs &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="kw">unlist</span>(<span class="kw">sapply</span>(<span class="dv">1</span>:nsubj, <span class="dt">FUN =</span> function(i) {
+    <span class="kw">rep</span>(<span class="kw">paste</span>(<span class="st">&quot;subj&quot;</span>, i, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>), ntimes[i]) }, <span class="dt">simplify =</span> <span class="ot">FALSE</span>)), 
+    <span class="kw">unlist</span>(<span class="kw">sapply</span>(<span class="dv">1</span>:nsubj, <span class="dt">FUN =</span> function(i) letters[<span class="dv">1</span>:ntimes[i]], <span class="dt">simplify =</span> <span class="ot">FALSE</span>)), <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
   if (balanced) {
-    times &lt;- rep(cumsum(c(1, sample(1:maxdiff, ntimes[1]-1, replace = TRUE))), nsubj)
+    times &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">cumsum</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">sample</span>(<span class="dv">1</span>:maxdiff, ntimes[<span class="dv">1</span>]-<span class="dv">1</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))), nsubj)
   } else {
-    times &lt;- unlist(sapply(1:nsubj, FUN = function(i) {
-      cumsum(c(1, sample(1:maxdiff, ntimes[i]-1, replace = TRUE)))}, simplify = FALSE))
+    times &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">sapply</span>(<span class="dv">1</span>:nsubj, <span class="dt">FUN =</span> function(i) {
+      <span class="kw">cumsum</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">sample</span>(<span class="dv">1</span>:maxdiff, ntimes[i]-<span class="dv">1</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)))}, <span class="dt">simplify =</span> <span class="ot">FALSE</span>))
   }
-  toy.meta &lt;- data.frame(subjID = subjIDs, sampID = sampIDs, 
-                         time   = times, stringsAsFactors = FALSE)
-  rownames(toy.otus) = toy.meta$sampID
-  colnames(toy.otus) = paste(&quot;otu&quot;, 1:notus, sep = &quot;&quot;)
-  return(list(otus = toy.otus, metadata = toy.meta))
-}
-</code></pre>
-
+  toy.meta &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subjID =</span> subjIDs, <span class="dt">sampID =</span> sampIDs, 
+                         <span class="dt">time   =</span> times, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+  <span class="kw">rownames</span>(toy.otus) =<span class="st"> </span>toy.meta$sampID
+  <span class="kw">colnames</span>(toy.otus) =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;otu&quot;</span>, <span class="dv">1</span>:notus, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">otus =</span> toy.otus, <span class="dt">metadata =</span> toy.meta))
+}</code></pre>
 <p>The code used to generate the test data is below. The data are included with the package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Paired data (two sequential observations on each subject)</span>
+paired.data &lt;-<span class="st"> </span><span class="kw">gen.data</span>(<span class="dt">seed =</span> <span class="dv">1</span>, <span class="dt">nsubj =</span> <span class="dv">5</span>, <span class="dt">maxtimes =</span> <span class="dv">2</span>, <span class="dt">maxdiff =</span> <span class="dv">1</span>, <span class="dt">balanced =</span> <span class="ot">TRUE</span>, <span class="dt">notus =</span> <span class="dv">10</span>, <span class="dt">propzero =</span> <span class="fl">0.5</span>, <span class="dt">maxct =</span> <span class="dv">500</span>)
+paired.otus &lt;-<span class="st"> </span>paired.data$otus
+paired.meta &lt;-<span class="st"> </span>paired.data$metadata
 
-<pre><code class="r"># Paired data (two sequential observations on each subject)
-paired.data &lt;- gen.data(seed = 1, nsubj = 5, maxtimes = 2, maxdiff = 1, balanced = TRUE, notus = 10, propzero = 0.5, maxct = 500)
-paired.otus &lt;- paired.data$otus
-paired.meta &lt;- paired.data$metadata
+<span class="co"># Balanced longitudinal data: Same number of observations, at same times, for each subject. </span>
+<span class="co"># Here each subject has three observations total, at days 1, 3, and 6. </span>
+<span class="co"># (up to 4 observations allowed, depending on random seed, with max 3 time units between observations)</span>
+bal.long.data &lt;-<span class="st"> </span><span class="kw">gen.data</span>(<span class="dt">seed =</span> <span class="dv">4</span>, <span class="dt">nsubj =</span> <span class="dv">5</span>, <span class="dt">maxtimes =</span> <span class="dv">4</span>, <span class="dt">maxdiff =</span> <span class="dv">3</span>, <span class="dt">balanced =</span> <span class="ot">TRUE</span>, <span class="dt">notus =</span> <span class="dv">10</span>, <span class="dt">propzero =</span> <span class="fl">0.5</span>, <span class="dt">maxct =</span> <span class="dv">500</span>)
+bal.long.otus &lt;-<span class="st"> </span>bal.long.data$otus
+bal.long.meta &lt;-<span class="st"> </span>bal.long.data$metadata
 
-# Balanced longitudinal data: Same number of observations, at same times, for each subject. 
-# Here each subject has three observations total, at days 1, 3, and 6. 
-# (up to 4 observations allowed, depending on random seed, with max 3 time units between observations)
-bal.long.data &lt;- gen.data(seed = 4, nsubj = 5, maxtimes = 4, maxdiff = 3, balanced = TRUE, notus = 10, propzero = 0.5, maxct = 500)
-bal.long.otus &lt;- bal.long.data$otus
-bal.long.meta &lt;- bal.long.data$metadata
+<span class="co"># Unbalanced longitudinal data: Different number and spacing of observations for subjects. </span>
+<span class="co"># (up to 4 observations per subject with up to 3 time units between observations)</span>
+unbal.long.data &lt;-<span class="st"> </span><span class="kw">gen.data</span>(<span class="dt">seed =</span> <span class="dv">1</span>, <span class="dt">nsubj =</span> <span class="dv">5</span>, <span class="dt">maxtimes =</span> <span class="dv">4</span>, <span class="dt">maxdiff =</span> <span class="dv">3</span>, <span class="dt">balanced =</span> <span class="ot">FALSE</span>, <span class="dt">notus =</span> <span class="dv">10</span>, <span class="dt">propzero =</span> <span class="fl">0.5</span>, <span class="dt">maxct =</span> <span class="dv">500</span>)
+unbal.long.otus &lt;-<span class="st"> </span>unbal.long.data$otus
+unbal.long.meta &lt;-<span class="st"> </span>unbal.long.data$metadata
 
-# Unbalanced longitudinal data: Different number and spacing of observations for subjects. 
-# (up to 4 observations per subject with up to 3 time units between observations)
-unbal.long.data &lt;- gen.data(seed = 1, nsubj = 5, maxtimes = 4, maxdiff = 3, balanced = FALSE, notus = 10, propzero = 0.5, maxct = 500)
-unbal.long.otus &lt;- unbal.long.data$otus
-unbal.long.meta &lt;- unbal.long.data$metadata
-
-# Rooted phylogenetic tree with 10 OTUs 
-sim.tree &lt;- gen.tree(seed = 1, notus = 10)
-</code></pre>
-
+<span class="co"># Rooted phylogenetic tree with 10 OTUs </span>
+sim.tree &lt;-<span class="st"> </span><span class="kw">gen.tree</span>(<span class="dt">seed =</span> <span class="dv">1</span>, <span class="dt">notus =</span> <span class="dv">10</span>)</code></pre>
+</div>
+<div id="references" class="section level2">
 <h2>References</h2>
-
 <p>Jun Chen, Kyle Bittinger, Emily S. Charlson, Christian Hoffmann, James Lewis, Gary D. Wu, Ronald G. Collman, Frederic D. Bushman, and Hongzhe Li (2012). Associating microbiome composition with environmental covariates using generalized UniFrac distances. Bioinformatics 28(16): 2106-2113.</p>
-
 <p>Catherine Lozupone and Rob Knight (2005). UniFrac: a new phylogenetic method for comparing microbial communities. Applied and Environmental Microbiology 71(12): 8228-8235.</p>
-
 <p>Jari Oksanen, F. Guillaume Blanchet, Roeland Kindt, Pierre Legendre, Peter R. Minchin, R. B. O’hara, Gavin L. Simpson et al. (2013). Package ‘vegan’. Community ecology package, version 2, no. 9.</p>
+<p>Anna M. Plantinga, Jun Chen, Robert R. Jenq, and Michael C. Wu. pldist: Ecological Dissimilarities for Paired and Longitudinal Microbiome Association Analysis. Under review.</p>
+</div>
 
-<p>Anna M. Plantinga, Jun Chen, Robert R. Jenq, and Michael C. Wu. pldist: Ecological Dissimilarities for Paired and Longitudinal Microbiome Association Analysis. Under review. </p>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>

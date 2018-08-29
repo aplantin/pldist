@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(ape) 
 ```
 
 ## Outline  
@@ -49,7 +48,6 @@ Currently, the package may only be downloaded and installed from GitHub using th
 ```{r installation-instructions}
 # only run if you don't have devtools installed 
 # install.packages("devtools") 
-library(devtools) 
 devtools::install_github("aplantin/pldist")
 ``` 
 

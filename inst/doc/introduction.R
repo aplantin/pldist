@@ -3,12 +3,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(ape) 
 
 ## ----installation-instructions-------------------------------------------
 # only run if you don't have devtools installed 
 # install.packages("devtools") 
-library(devtools) 
 devtools::install_github("aplantin/pldist")
 
 ## ----load----------------------------------------------------------------

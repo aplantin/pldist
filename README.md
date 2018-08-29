@@ -28,5 +28,37 @@ library(ape)
 data(sim.tree)
 data(paired.otus)
 data(paired.meta)
+data(bal.long.otus) 
+data(bal.long.meta) 
+
+# Look at the OTU data: 
+# row names are sample IDs, column names are OTU IDs 
+paired.otus[1:4,1:4] 
+
+# Look at the metadata: 
+# columns are subjID, sampID, time 
+# One row per sample 
+paired.meta[1:4, ]
+
+# Gower distance, paired & quantitative transformation 
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "gower")
+
+# Gower distance, paired & qualitative/binary transformation 
+pldist(paired.otus, paired.meta, paired = TRUE, binary = TRUE, method = "gower")
+
+# Gower distance, longitudinal & quantitative transformation 
+pldist(bal.long.otus, bal.long.meta, paired = FALSE, binary = FALSE, method = "gower")
+
+# Gower distance, longitudinal & qualitative/binary transformation 
+pldist(bal.long.otus, bal.long.meta, paired = FALSE, binary = TRUE, method = "gower")
+
+# Other distances 
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "bray")
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "kulczynski")
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccard")
+
+# UniFrac also requires a phylogenetic tree and gamma values 
+# (Gamma controls weight placed on abundant lineages) 
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))
 ``` 
 

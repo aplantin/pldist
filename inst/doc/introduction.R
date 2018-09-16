@@ -75,7 +75,7 @@ D.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary paired transf.)
 # Same procedure for longitudinal data 
 D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, tree = sim.tree, 
                       gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
-D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transfromation)
+D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
 D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
 
 ## ----pldist--------------------------------------------------------------

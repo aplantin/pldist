@@ -153,6 +153,13 @@ counts2props <- function(x) {
 #'     \item{avg.prop}{n x p matrix with overall average proportion of each taxon}
 #'     \item{type}{Type of transformation that was used (paired, balanced longitudinal, 
 #'     unbalanced longitudinal) with a warning if unbalanced longitudinal.} 
+#' @examples
+#' data("paired.otus")
+#' data("paired.meta")
+#'  # paired transformation
+#' res1 <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE) 
+#'  # longitudinal transformation 
+#' res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE) 
 #'     
 #' @export 
 #' 

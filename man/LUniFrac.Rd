@@ -43,3 +43,13 @@ difference of these differences, resulting in a dissimilarity
 matrix that can be used in a variety of downstream 
 distance-based analyses.
 }
+\examples{
+data("bal.long.otus")
+data("bal.long.meta")
+data("sim.tree")
+D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, 
+    tree = sim.tree, gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
+D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
+D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
+
+}

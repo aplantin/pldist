@@ -12,7 +12,7 @@
 
 <meta name="author" content="Anna Plantinga" />
 
-<meta name="date" content="2018-08-28" />
+<meta name="date" content="2018-09-16" />
 
 <title>Introduction to pldist</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to pldist</h1>
 <h4 class="author"><em>Anna Plantinga</em></h4>
-<h4 class="date"><em>2018-08-28</em></h4>
+<h4 class="date"><em>2018-09-16</em></h4>
 
 
 
@@ -124,8 +124,8 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 <span class="co">#&gt; Installing pldist</span>
 <span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
 <span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
-<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmptjcIyN/devtools130b11e8b3bcb/aplantin-pldist-e2a52e6'  \</span>
-<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/Rtmpk10k1Y/Rinst130a174d83cc7'  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpN6KSmv/devtoolsbcd9b40cce/aplantin-pldist-874c976'  \</span>
+<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/Rtmpychc74/Rinstbbb7ef7047f'  \</span>
 <span class="co">#&gt;   --install-tests</span>
 <span class="co">#&gt; </span></code></pre></div>
 </div>
@@ -277,7 +277,7 @@ D.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unwe
 <span class="co"># Same procedure for longitudinal data </span>
 D2.unifrac &lt;-<span class="st"> </span><span class="kw">LUniFrac</span>(<span class="dt">otu.tab =</span> bal.long.otus, <span class="dt">metadata =</span> bal.long.meta, <span class="dt">tree =</span> sim.tree, 
                       <span class="dt">gam =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">check.input =</span> <span class="ot">TRUE</span>)
-D2.unifrac[, , <span class="st">&quot;d_1&quot;</span>]   <span class="co"># gamma = 1 (quantitative longitudinal transfromation)</span>
+D2.unifrac[, , <span class="st">&quot;d_1&quot;</span>]   <span class="co"># gamma = 1 (quantitative longitudinal transformation)</span>
 <span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
 <span class="co">#&gt; subj1 0.0000000 0.1184031 0.1249098 0.1324864 0.1242423</span>
 <span class="co">#&gt; subj2 0.1184031 0.0000000 0.1357404 0.1402744 0.0938360</span>
@@ -418,6 +418,7 @@ d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{
 <ul>
 <li>In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter <span class="math inline">\(\gamma\)</span>. No such adjustments are currently available for other dissimilarities.</li>
 </ul></li>
+<li>The longitudinal <span class="math inline">\(d_k\)</span> are always nonnegative and, depending on the choice of <span class="math inline">\(t_k\)</span> units, may take any value. The paired <span class="math inline">\(d_k\)</span> may be negative or positive, but are always between -0.5 and 0.5.</li>
 </ul>
 </div>
 <div id="bray-curtis" class="section level3">

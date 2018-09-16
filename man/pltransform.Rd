@@ -37,3 +37,12 @@ OTU transformation for longitudinal data. Computes average within-subject change
     (in presence for qualitative metrics, abundance for quantitative metrics) 
     during one unit of time for each taxon.
 }
+\examples{
+data("paired.otus")
+data("paired.meta")
+ # paired transformation
+res1 <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE) 
+ # longitudinal transformation 
+res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE) 
+    
+}

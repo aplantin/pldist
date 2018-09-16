@@ -22,6 +22,7 @@ kulczynski <- function(tsf.data, paired, binary) {
   
   n = nrow(dat); m = ncol(dat) 
   out.D <- matrix(0, n, n) 
+  rownames(out.D) = colnames(out.D) = rownames(dat)
   
   if (paired) {
     if (binary) {

@@ -26,6 +26,15 @@
 #'    matrix may be accessed by result[,,"d_UW"], and the generalized dissimilarities by result[,,"d_G"] 
 #'    where G is the particular choice of gamma.
 #'    
+#' @examples
+#' data("bal.long.otus")
+#' data("bal.long.meta")
+#' data("sim.tree")
+#' D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, 
+#'     tree = sim.tree, gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
+#' D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
+#' D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
+#' 
 #' @export
 #' 
 LUniFrac <- function(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired, check.input = TRUE) {

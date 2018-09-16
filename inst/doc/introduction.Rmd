@@ -175,7 +175,7 @@ D.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary paired transf.)
 # Same procedure for longitudinal data 
 D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, tree = sim.tree, 
                       gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
-D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transfromation)
+D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
 D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
 ```
 
@@ -231,6 +231,7 @@ There are several items to note in comparing these transformations.
 - Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups. 
 - Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same $d_k$ as a change from 0.02 to 0.04. 
     - In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter $\gamma$. No such adjustments are currently available for other dissimilarities. 
+- The longitudinal $d_k$ are always nonnegative and, depending on the choice of $t_k$ units, may take any value. The paired $d_k$ may be negative or positive, but are always between -0.5 and 0.5. 
 
 ### Bray-Curtis 
 

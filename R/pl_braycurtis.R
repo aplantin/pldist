@@ -18,6 +18,7 @@ braycurtis <- function(tsf.data, binary) {
   
   n = nrow(dat); m = ncol(dat) 
   out.D <- matrix(0, n, n) 
+  rownames(out.D) = colnames(out.D) = rownames(dat)
   
   for (i in 1:(n-1)) {
     for (j in (i+1):n) {

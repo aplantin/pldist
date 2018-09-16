@@ -19,6 +19,7 @@ gower <- function(tsf.data, binary) {
   
   n = nrow(dat); m = ncol(dat) 
   out.D <- matrix(0, n, n) 
+  rownames(out.D) = colnames(out.D) = rownames(dat)
   
   taxmax <- apply(dat, 2, max)
   taxmin <- apply(dat, 2, min)

@@ -24,7 +24,8 @@
 #' @return Returns a list containing all n x n distance (or dissimilarity) matrices requested, 
 #' with both quantitative and qualitative versions of the metric, named as "D_metric_quant" or 
 #' "D_metric_qual".
-#'     
+#' 
+#' @export
 #'     
 pldist_all <- function(otus, metadata, paired = FALSE, method = c("b", "g", "j", "k", "u"), 
                    tree = NULL, gam = c(0, 0.5, 1)) {

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Anna Plantinga" />
 
-<meta name="date" content="2018-09-16" />
+<meta name="date" content="2018-09-22" />
 
 <title>Introduction to pldist</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to pldist</h1>
 <h4 class="author"><em>Anna Plantinga</em></h4>
-<h4 class="date"><em>2018-09-16</em></h4>
+<h4 class="date"><em>2018-09-22</em></h4>
 
 
 
@@ -124,8 +124,8 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 <span class="co">#&gt; Installing pldist</span>
 <span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
 <span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
-<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpN6KSmv/devtoolsbcd9b40cce/aplantin-pldist-874c976'  \</span>
-<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/Rtmpychc74/Rinstbbb7ef7047f'  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpDwji8C/devtoolsdd292dcdef/aplantin-pldist-8564bda'  \</span>
+<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/Rtmpdp5n9m/Rinstdd174af6cdd8'  \</span>
 <span class="co">#&gt;   --install-tests</span>
 <span class="co">#&gt; </span></code></pre></div>
 </div>
@@ -298,62 +298,62 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 <p>The output is a list with elements “D” (the distance/dissimilarity matrix) and “type” (a summary of the distance metric and transformation used).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gower distance, paired &amp; quantitative transformation </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span>
-<span class="co">#&gt; [1,] 0.0000000 0.4839758 0.4455620 0.5052843 0.5766593</span>
-<span class="co">#&gt; [2,] 0.4839758 0.0000000 0.6109036 0.4404913 0.4576500</span>
-<span class="co">#&gt; [3,] 0.4455620 0.6109036 0.0000000 0.5056862 0.7235955</span>
-<span class="co">#&gt; [4,] 0.5052843 0.4404913 0.5056862 0.0000000 0.3823376</span>
-<span class="co">#&gt; [5,] 0.5766593 0.4576500 0.7235955 0.3823376 0.0000000</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.4839758 0.4455620 0.5052843 0.5766593</span>
+<span class="co">#&gt; subj2 0.4839758 0.0000000 0.6109036 0.4404913 0.4576500</span>
+<span class="co">#&gt; subj3 0.4455620 0.6109036 0.0000000 0.5056862 0.7235955</span>
+<span class="co">#&gt; subj4 0.5052843 0.4404913 0.5056862 0.0000000 0.3823376</span>
+<span class="co">#&gt; subj5 0.5766593 0.4576500 0.7235955 0.3823376 0.0000000</span>
 
 <span class="co"># Gower distance, paired &amp; qualitative/binary transformation </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">TRUE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5]</span>
-<span class="co">#&gt; [1,] 0.00 0.40 0.50 0.45 0.55</span>
-<span class="co">#&gt; [2,] 0.40 0.00 0.60 0.25 0.45</span>
-<span class="co">#&gt; [3,] 0.50 0.60 0.00 0.45 0.75</span>
-<span class="co">#&gt; [4,] 0.45 0.25 0.45 0.00 0.40</span>
-<span class="co">#&gt; [5,] 0.55 0.45 0.75 0.40 0.00</span>
+<span class="co">#&gt;       subj1 subj2 subj3 subj4 subj5</span>
+<span class="co">#&gt; subj1  0.00  0.40  0.50  0.45  0.55</span>
+<span class="co">#&gt; subj2  0.40  0.00  0.60  0.25  0.45</span>
+<span class="co">#&gt; subj3  0.50  0.60  0.00  0.45  0.75</span>
+<span class="co">#&gt; subj4  0.45  0.25  0.45  0.00  0.40</span>
+<span class="co">#&gt; subj5  0.55  0.45  0.75  0.40  0.00</span>
 
 <span class="co"># Gower distance, longitudinal &amp; quantitative transformation </span>
 <span class="kw">pldist</span>(bal.long.otus, bal.long.meta, <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span>
-<span class="co">#&gt; [1,] 0.0000000 0.5526350 0.5062275 0.4806651 0.4852043</span>
-<span class="co">#&gt; [2,] 0.5526350 0.0000000 0.5642091 0.7113378 0.5168968</span>
-<span class="co">#&gt; [3,] 0.5062275 0.5642091 0.0000000 0.4284639 0.4316573</span>
-<span class="co">#&gt; [4,] 0.4806651 0.7113378 0.4284639 0.0000000 0.4551940</span>
-<span class="co">#&gt; [5,] 0.4852043 0.5168968 0.4316573 0.4551940 0.0000000</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.5526350 0.5062275 0.4806651 0.4852043</span>
+<span class="co">#&gt; subj2 0.5526350 0.0000000 0.5642091 0.7113378 0.5168968</span>
+<span class="co">#&gt; subj3 0.5062275 0.5642091 0.0000000 0.4284639 0.4316573</span>
+<span class="co">#&gt; subj4 0.4806651 0.7113378 0.4284639 0.0000000 0.4551940</span>
+<span class="co">#&gt; subj5 0.4852043 0.5168968 0.4316573 0.4551940 0.0000000</span>
 
 <span class="co"># Gower distance, longitudinal &amp; qualitative/binary transformation </span>
 <span class="kw">pldist</span>(bal.long.otus, bal.long.meta, <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">binary =</span> <span class="ot">TRUE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span>
-<span class="co">#&gt; [1,] 0.0000000 0.5666667 0.5133333 0.4733333 0.5466667</span>
-<span class="co">#&gt; [2,] 0.5666667 0.0000000 0.5600000 0.7200000 0.5533333</span>
-<span class="co">#&gt; [3,] 0.5133333 0.5600000 0.0000000 0.3200000 0.4466667</span>
-<span class="co">#&gt; [4,] 0.4733333 0.7200000 0.3200000 0.0000000 0.4066667</span>
-<span class="co">#&gt; [5,] 0.5466667 0.5533333 0.4466667 0.4066667 0.0000000</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.5666667 0.5133333 0.4733333 0.5466667</span>
+<span class="co">#&gt; subj2 0.5666667 0.0000000 0.5600000 0.7200000 0.5533333</span>
+<span class="co">#&gt; subj3 0.5133333 0.5600000 0.0000000 0.3200000 0.4466667</span>
+<span class="co">#&gt; subj4 0.4733333 0.7200000 0.3200000 0.0000000 0.4066667</span>
+<span class="co">#&gt; subj5 0.5466667 0.5533333 0.4466667 0.4066667 0.0000000</span>
 
 <span class="co"># Other distances </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;bray&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span>
-<span class="co">#&gt; [1,] 0.0000000 0.3923512 0.3118659 0.3903021 0.4750872</span>
-<span class="co">#&gt; [2,] 0.3923512 0.0000000 0.4356975 0.3280185 0.4212443</span>
-<span class="co">#&gt; [3,] 0.3118659 0.4356975 0.0000000 0.3763288 0.5184529</span>
-<span class="co">#&gt; [4,] 0.3903021 0.3280185 0.3763288 0.0000000 0.2913837</span>
-<span class="co">#&gt; [5,] 0.4750872 0.4212443 0.5184529 0.2913837 0.0000000</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.3923512 0.3118659 0.3903021 0.4750872</span>
+<span class="co">#&gt; subj2 0.3923512 0.0000000 0.4356975 0.3280185 0.4212443</span>
+<span class="co">#&gt; subj3 0.3118659 0.4356975 0.0000000 0.3763288 0.5184529</span>
+<span class="co">#&gt; subj4 0.3903021 0.3280185 0.3763288 0.0000000 0.2913837</span>
+<span class="co">#&gt; subj5 0.4750872 0.4212443 0.5184529 0.2913837 0.0000000</span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;kulczynski&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span>
-<span class="co">#&gt; [1,] 0.0000000 0.6725624 0.4219094 0.9684359 0.8185846</span>
-<span class="co">#&gt; [2,] 0.6725624 0.0000000 0.6443266 1.0000000 0.8281911</span>
-<span class="co">#&gt; [3,] 0.4219094 0.6443266 0.0000000 0.5969082 0.7777403</span>
-<span class="co">#&gt; [4,] 0.9684359 1.0000000 0.5969082 0.0000000 0.8425175</span>
-<span class="co">#&gt; [5,] 0.8185846 0.8281911 0.7777403 0.8425175 0.0000000</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.6725624 0.4219094 0.9684359 0.8185846</span>
+<span class="co">#&gt; subj2 0.6725624 0.0000000 0.6443266 1.0000000 0.8281911</span>
+<span class="co">#&gt; subj3 0.4219094 0.6443266 0.0000000 0.5969082 0.7777403</span>
+<span class="co">#&gt; subj4 0.9684359 1.0000000 0.5969082 0.0000000 0.8425175</span>
+<span class="co">#&gt; subj5 0.8185846 0.8281911 0.7777403 0.8425175 0.0000000</span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;jaccard&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           [,1]      [,2]      [,3]      [,4]      [,5]</span>
-<span class="co">#&gt; [1,] 0.0000000 0.7447088 0.5481119 0.9899197 0.8590826</span>
-<span class="co">#&gt; [2,] 0.7447088 0.0000000 0.7693678 1.0000000 0.8709611</span>
-<span class="co">#&gt; [3,] 0.5481119 0.7693678 0.0000000 0.8761344 0.8615110</span>
-<span class="co">#&gt; [4,] 0.9899197 1.0000000 0.8761344 0.0000000 0.9412132</span>
-<span class="co">#&gt; [5,] 0.8590826 0.8709611 0.8615110 0.9412132 0.0000000</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.7447088 0.5481119 0.9899197 0.8590826</span>
+<span class="co">#&gt; subj2 0.7447088 0.0000000 0.7693678 1.0000000 0.8709611</span>
+<span class="co">#&gt; subj3 0.5481119 0.7693678 0.0000000 0.8761344 0.8615110</span>
+<span class="co">#&gt; subj4 0.9899197 1.0000000 0.8761344 0.0000000 0.9412132</span>
+<span class="co">#&gt; subj5 0.8590826 0.8709611 0.8615110 0.9412132 0.0000000</span>
 
 <span class="co"># UniFrac additionally requires a phylogenetic tree and gamma values </span>
 <span class="co"># (Gamma controls weight placed on abundant lineages) </span>

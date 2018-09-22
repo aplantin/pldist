@@ -91,7 +91,8 @@ tsf_long <- function(otus, metadata) {
     dk.g <- rep(0, ncol(otus))
     cumprop <- subj.otu[1,] 
     for (j in 1:(qi-1)) {
-      dk.uw = dk.uw + (1/(subj.times[j+1] - subj.times[j])) * abs(as.numeric(subj.otu[(j+1), ] > 0) - as.numeric(subj.otu[j, ] > 0))
+      dk.uw = dk.uw + (1/(subj.times[j+1] - subj.times[j])) * 
+        abs(as.numeric(subj.otu[(j+1), ] > 0) - as.numeric(subj.otu[j, ] > 0))
       nonz <- which(subj.otu[(j+1), ] != 0 | subj.otu[j, ] != 0)
       dk.g[nonz] = dk.g[nonz] + (1/(subj.times[j+1] - subj.times[j])) * 
         abs((subj.otu[(j+1), nonz] - subj.otu[j, nonz])/(subj.otu[(j+1), nonz] + subj.otu[j, nonz]))

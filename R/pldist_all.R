@@ -1,4 +1,4 @@
-#' pldist.all
+#' pldist_all
 #'
 #' Function that calculates multiple paired and longitudinal ecological distance/dissimilarity 
 #' matrices. Includes qualitative and quantitative versions of Bray-Curtis, Jaccard, Kulczynski, 

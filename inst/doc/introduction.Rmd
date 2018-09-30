@@ -182,7 +182,7 @@ D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal t
 
 ### All Distances 
 
-The general form of the distance function, which is also the primary function of the R package, is `pldist`. The parameter "method" controls which distance metric is used. Available metrics are paired and longitudinal variations of Bray-Curtis, Jaccard, Kulczynski, Gower, and UniFrac, described further in the following section ([Transformations and Dissimilarities]). The parameters "paired" and "binary" determine which of the four transformations is used. 
+The general form of the distance function is `pldist`. The parameter "method" controls which distance metric is used. Available metrics are paired and longitudinal variations of Bray-Curtis, Jaccard, Kulczynski, Gower, and UniFrac, described further in the following section ([Transformations and Dissimilarities]). The parameters "paired" and "binary" determine which of the four transformations is used. 
 
 The output is a list with elements "D" (the distance/dissimilarity matrix) and "type" (a summary of the distance metric and transformation used). 
 
@@ -208,6 +208,14 @@ pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccar
 # (Gamma controls weight placed on abundant lineages) 
 pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
     method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
+```
+
+If multiple distances are desired, `pldist_all` returns a list with both quantitative and qualitative versions of each requested metric, named (for example) "D_gower_quant" or "D_gower_qual" for all metrics except UniFrac; "D_UW" for the unweighted paired/longitudinal UniFrac; and "D_gam" for each value of gamma for the generalized paired/longitudinal UniFrac metrics. 
+
+```{r pldist-all}
+# Multiple distances
+pldist_all(paired.otus, paired.meta, paired = TRUE, method = c("gower", "bray", "unifrac"), 
+           tree = sim.tree, gam = c(0, 0.5, 1))
 ```
 
 ## Transformations and Dissimilarities

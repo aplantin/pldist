@@ -101,6 +101,11 @@ pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccar
 pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
     method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
 
+## ----pldist-all----------------------------------------------------------
+# Multiple distances
+pldist_all(paired.otus, paired.meta, paired = TRUE, method = c("gower", "bray", "unifrac"), 
+           tree = sim.tree, gam = c(0, 0.5, 1))
+
 ## ----gen-tree------------------------------------------------------------
 # tree tip names must match column names in OTU table
 gen.tree <- function(seed, notus) {

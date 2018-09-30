@@ -12,7 +12,7 @@
 
 <meta name="author" content="Anna Plantinga" />
 
-<meta name="date" content="2018-09-22" />
+<meta name="date" content="2018-09-30" />
 
 <title>Introduction to pldist</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to pldist</h1>
 <h4 class="author"><em>Anna Plantinga</em></h4>
-<h4 class="date"><em>2018-09-22</em></h4>
+<h4 class="date"><em>2018-09-30</em></h4>
 
 
 
@@ -122,10 +122,17 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 <span class="co">#&gt; Downloading GitHub repo aplantin/pldist@master</span>
 <span class="co">#&gt; from URL https://api.github.com/repos/aplantin/pldist/zipball/master</span>
 <span class="co">#&gt; Installing pldist</span>
+<span class="co">#&gt; Installing ape</span>
 <span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
 <span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
-<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpiWBQlu/devtoolsf02d20affd15/aplantin-pldist-975b067'  \</span>
-<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/Rtmp7QwDOY/Rinstf01a5e8f6cf1'  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmphxQTLg/devtools47cd9a0189c/ape'  \</span>
+<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpvXJECn/Rinst47bb4a70314b'  \</span>
+<span class="co">#&gt;   --install-tests</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
+<span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
+<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmphxQTLg/devtools47cd6bb36684/aplantin-pldist-48681db'  \</span>
+<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpvXJECn/Rinst47bb4a70314b'  \</span>
 <span class="co">#&gt;   --install-tests</span>
 <span class="co">#&gt; </span></code></pre></div>
 </div>
@@ -294,7 +301,7 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 </div>
 <div id="all-distances" class="section level3">
 <h3>All Distances</h3>
-<p>The general form of the distance function, which is also the primary function of the R package, is <code>pldist</code>. The parameter “method” controls which distance metric is used. Available metrics are paired and longitudinal variations of Bray-Curtis, Jaccard, Kulczynski, Gower, and UniFrac, described further in the following section (<a href="#transformations-and-dissimilarities">Transformations and Dissimilarities</a>). The parameters “paired” and “binary” determine which of the four transformations is used.</p>
+<p>The general form of the distance function is <code>pldist</code>. The parameter “method” controls which distance metric is used. Available metrics are paired and longitudinal variations of Bray-Curtis, Jaccard, Kulczynski, Gower, and UniFrac, described further in the following section (<a href="#transformations-and-dissimilarities">Transformations and Dissimilarities</a>). The parameters “paired” and “binary” determine which of the four transformations is used.</p>
 <p>The output is a list with elements “D” (the distance/dissimilarity matrix) and “type” (a summary of the distance metric and transformation used).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gower distance, paired &amp; quantitative transformation </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
@@ -394,6 +401,73 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 <span class="co">#&gt; subj3 0.3313996 0.3930127 0.0000000 0.2627004 0.4641035</span>
 <span class="co">#&gt; subj4 0.2012705 0.1514454 0.2627004 0.0000000 0.2896324</span>
 <span class="co">#&gt; subj5 0.3394885 0.3957395 0.4641035 0.2896324 0.0000000</span></code></pre></div>
+<p>If multiple distances are desired, <code>pldist_all</code> returns a list with both quantitative and qualitative versions of each requested metric, named (for example) “D_gower_quant” or “D_gower_qual” for all metrics except UniFrac; “D_UW” for the unweighted paired/longitudinal UniFrac; and “D_gam” for each value of gamma for the generalized paired/longitudinal UniFrac metrics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Multiple distances</span>
+<span class="kw">pldist_all</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">method =</span> <span class="kw">c</span>(<span class="st">&quot;gower&quot;</span>, <span class="st">&quot;bray&quot;</span>, <span class="st">&quot;unifrac&quot;</span>), 
+           <span class="dt">tree =</span> sim.tree, <span class="dt">gam =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="dv">1</span>))
+<span class="co">#&gt; $D_braycurtis_qual</span>
+<span class="co">#&gt;       subj1 subj2 subj3 subj4 subj5</span>
+<span class="co">#&gt; subj1  0.00  0.35  0.35  0.35  0.45</span>
+<span class="co">#&gt; subj2  0.35  0.00  0.40  0.20  0.40</span>
+<span class="co">#&gt; subj3  0.35  0.40  0.00  0.30  0.50</span>
+<span class="co">#&gt; subj4  0.35  0.20  0.30  0.00  0.30</span>
+<span class="co">#&gt; subj5  0.45  0.40  0.50  0.30  0.00</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_braycurtis_quant</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.3923512 0.3118659 0.3903021 0.4750872</span>
+<span class="co">#&gt; subj2 0.3923512 0.0000000 0.4356975 0.3280185 0.4212443</span>
+<span class="co">#&gt; subj3 0.3118659 0.4356975 0.0000000 0.3763288 0.5184529</span>
+<span class="co">#&gt; subj4 0.3903021 0.3280185 0.3763288 0.0000000 0.2913837</span>
+<span class="co">#&gt; subj5 0.4750872 0.4212443 0.5184529 0.2913837 0.0000000</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_gower_qual</span>
+<span class="co">#&gt;       subj1 subj2 subj3 subj4 subj5</span>
+<span class="co">#&gt; subj1  0.00  0.40  0.50  0.45  0.55</span>
+<span class="co">#&gt; subj2  0.40  0.00  0.60  0.25  0.45</span>
+<span class="co">#&gt; subj3  0.50  0.60  0.00  0.45  0.75</span>
+<span class="co">#&gt; subj4  0.45  0.25  0.45  0.00  0.40</span>
+<span class="co">#&gt; subj5  0.55  0.45  0.75  0.40  0.00</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_gower_quant</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.4839758 0.4455620 0.5052843 0.5766593</span>
+<span class="co">#&gt; subj2 0.4839758 0.0000000 0.6109036 0.4404913 0.4576500</span>
+<span class="co">#&gt; subj3 0.4455620 0.6109036 0.0000000 0.5056862 0.7235955</span>
+<span class="co">#&gt; subj4 0.5052843 0.4404913 0.5056862 0.0000000 0.3823376</span>
+<span class="co">#&gt; subj5 0.5766593 0.4576500 0.7235955 0.3823376 0.0000000</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_UW</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.2862445 0.3313996 0.2012705 0.3394885</span>
+<span class="co">#&gt; subj2 0.2862445 0.0000000 0.3930127 0.1514454 0.3957395</span>
+<span class="co">#&gt; subj3 0.3313996 0.3930127 0.0000000 0.2627004 0.4641035</span>
+<span class="co">#&gt; subj4 0.2012705 0.1514454 0.2627004 0.0000000 0.2896324</span>
+<span class="co">#&gt; subj5 0.3394885 0.3957395 0.4641035 0.2896324 0.0000000</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_0</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.3937068 0.3161156 0.2596360 0.3927642</span>
+<span class="co">#&gt; subj2 0.3937068 0.0000000 0.4679134 0.2575087 0.4482490</span>
+<span class="co">#&gt; subj3 0.3161156 0.4679134 0.0000000 0.3402118 0.4702829</span>
+<span class="co">#&gt; subj4 0.2596360 0.2575087 0.3402118 0.0000000 0.3048324</span>
+<span class="co">#&gt; subj5 0.3927642 0.4482490 0.4702829 0.3048324 0.0000000</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_0.5</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.3421997 0.2740330 0.1916925 0.3827689</span>
+<span class="co">#&gt; subj2 0.3421997 0.0000000 0.4457708 0.2144613 0.4384797</span>
+<span class="co">#&gt; subj3 0.2740330 0.4457708 0.0000000 0.3024500 0.4450135</span>
+<span class="co">#&gt; subj4 0.1916925 0.2144613 0.3024500 0.0000000 0.3527522</span>
+<span class="co">#&gt; subj5 0.3827689 0.4384797 0.4450135 0.3527522 0.0000000</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $D_1</span>
+<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
+<span class="co">#&gt; subj1 0.0000000 0.2897983 0.2225681 0.1514629 0.3688189</span>
+<span class="co">#&gt; subj2 0.2897983 0.0000000 0.4159268 0.1622736 0.4310636</span>
+<span class="co">#&gt; subj3 0.2225681 0.4159268 0.0000000 0.2723363 0.4175250</span>
+<span class="co">#&gt; subj4 0.1514629 0.1622736 0.2723363 0.0000000 0.3163633</span>
+<span class="co">#&gt; subj5 0.3688189 0.4310636 0.4175250 0.3163633 0.0000000</span></code></pre></div>
 </div>
 </div>
 <div id="transformations-and-dissimilarities" class="section level2">

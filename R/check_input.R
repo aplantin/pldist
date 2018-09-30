@@ -50,10 +50,13 @@ check_input <- function(otus, metadata, paired) {
       stop("Paired dissimilarities were requested, but some groups/subjects do not have 2 observations. \n
            Please check for missing or miscoded data and exclude any unpaired observations.")
     }
+  } 
+  if (paired) {
     metadata$time = as.numeric(as.factor(metadata$time))
-  } else {      
-    metadata$time = as.numeric(metadata$time) 
+  } else {
+    metadata$time = as.numeric(metadata$time)
   }
+  
   
   return(list(otus = otus, metadata = metadata))
 }

@@ -4,7 +4,7 @@
 #' matrices. Includes qualitative and quantitative versions of Bray-Curtis, Jaccard, Kulczynski, 
 #' Gower, and unweighted and generalized UniFrac distances/dissimilarities. UniFrac-based 
 #' metrics are based in part on GUniFrac (Jun Chen & Hongzhe Li (2012)). Both quantitative and 
-#' qualitative versions of each requested metric are returned 
+#' qualitative versions of each requested metric are returned. 
 #'
 #' @param otus OTU count or frequency table, containing one row per sample and one column per OTU. 
 #' @param metadata Data frame with three columns: subject identifiers (n unique values, column name "subjID"), 

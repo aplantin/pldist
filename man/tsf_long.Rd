@@ -4,7 +4,7 @@
 \alias{tsf_long}
 \title{tsf_long}
 \usage{
-tsf_long(otus, metadata)
+tsf_long(otus, metadata, norm = TRUE)
 }
 \arguments{
 \item{otus}{Matrix of OTU counts or proportions. Notes: (1) Will be transformed to 
@@ -16,6 +16,8 @@ using UniFrac distances).}
 sample identifiers (must match row names of otu.tab, column name "sampID"), 
 and time point or group identifier (if using longitudinal distances, this must be numeric or 
 convertable to numeric).}
+
+\item{norm}{Indicator of whether to normalize the difference to average taxon abundance or not (default TRUE)}
 }
 \value{
 List with the following elements. Both data matrices have subject identifiers 

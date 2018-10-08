@@ -4,7 +4,7 @@
 \alias{pltransform}
 \title{pltransform}
 \usage{
-pltransform(otus, metadata, paired, check.input = TRUE)
+pltransform(otus, metadata, paired, check.input = TRUE, norm = TRUE)
 }
 \arguments{
 \item{otus}{Matrix of OTU counts or proportions. Notes: (1) Will be transformed to 
@@ -22,6 +22,8 @@ longitudinal version (FALSE). Paired analyis is only possible when there are exa
 unique time points/identifiers for each subject or pair.}
 
 \item{check.input}{Logical indicating whether to check input values (default TRUE).}
+
+\item{norm}{Logical indicating whether quantitative differences should be normalized to average taxon abundance (default TRUE)}
 }
 \value{
 List with the following elements. Both data matrices have subject identifiers 

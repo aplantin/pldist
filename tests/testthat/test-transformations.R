@@ -25,15 +25,15 @@ test_that("transformations give expected result", {
   expect_equal(pltransform(otus, metadata, paired = TRUE)$avg.prop[1,], exp.avg.subj1) 
   
   ## Longitudinal (balanced, time points 1 and 2)
-  long.tsf <- pltransform(otus, metadata, paired = FALSE) 
+  long.tsf.1 <- pltransform(otus, metadata, paired = FALSE, norm = TRUE) 
   
   exp.binary.subj1 <- c(1, 1, 0) 
   exp.quant.subj1 <- c(1, 1, 1/7)
   exp.avg.subj1 <- (otus[1,] + otus[2,])/2
   
-  expect_equal(pltransform(otus, metadata, paired = FALSE)$dat.binary[1,], exp.binary.subj1)
-  expect_equal(pltransform(otus, metadata, paired = FALSE)$dat.quant[1,], exp.quant.subj1)
-  expect_equal(pltransform(otus, metadata, paired = FALSE)$avg.prop[1,], exp.avg.subj1) 
+  expect_equal(long.tsf.1$dat.binary[1,], exp.binary.subj1)
+  expect_equal(long.tsf.1$dat.quant[1,], exp.quant.subj1)
+  expect_equal(long.tsf.1$avg.prop[1,], exp.avg.subj1) 
   
   ## Longitudinal (unbalanced -- time points 1, 5, and 7) 
   otus <- matrix(nrow = 6, ncol = 3) 
@@ -50,14 +50,19 @@ test_that("transformations give expected result", {
   otus[5, ] <- c(0.4, 0.6, 0) 
   otus[6, ] <- c(0.6, 0.2, 0.2) 
   
-  long.tsf.2 <- pltransform(otus, metadata, paired = FALSE) 
+  long.tsf.2 <- pltransform(otus, metadata, paired = FALSE, norm = TRUE) 
   
   exp.binary.subj1 <- (c(1, 1, 0)/4 + c(0, 1, 0)/2)/2 
   exp.quant.subj1 <- (c(1, 1, 1/7)/4 + c(0, 1, 1/2)/2)/2
   exp.avg.subj1 <- (otus[1,] + otus[2,] + otus[3,])/3 
   
-  expect_equal(pltransform(otus, metadata, paired = FALSE)$dat.binary[1,], exp.binary.subj1)
-  expect_equal(pltransform(otus, metadata, paired = FALSE)$dat.quant[1,], exp.quant.subj1)
-  expect_equal(pltransform(otus, metadata, paired = FALSE)$avg.prop[1,], exp.avg.subj1) 
+  expect_equal(long.tsf.2$dat.binary[1,], exp.binary.subj1)
+  expect_equal(long.tsf.2$dat.quant[1,], exp.quant.subj1)
+  expect_equal(long.tsf.2$avg.prop[1,], exp.avg.subj1) 
+  
+  ## Longitudinal (unbalanced -- time points 1, 5, and 7) 
+  long.tsf.3 <- pltransform(otus, metadata, paired = FALSE, norm = FALSE) 
+  exp.quant.subj1 <- (abs(otus[2,] - otus[1,])/4 + abs(otus[3,] - otus[2,])/2)/2 
+  expect_equal(long.tsf.3$dat.quant[1,], exp.quant.subj1)
 })
 

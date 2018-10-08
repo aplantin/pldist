@@ -4,7 +4,7 @@
 \alias{tsf_paired}
 \title{tsf_paired}
 \usage{
-tsf_paired(otus, metadata)
+tsf_paired(otus, metadata, norm = TRUE)
 }
 \arguments{
 \item{otus}{Matrix of OTU counts or proportions. Notes: (1) Will be transformed to 
@@ -15,6 +15,8 @@ using UniFrac distances).}
 \item{metadata}{Data frame with three columns: subject identifiers (n unique values, column name "subjID"), 
 sample identifiers (must match row names of otu.tab, column name "sampID"), 
 and time point or group identifier (must have two unique values for paired transformation).}
+
+\item{norm}{Indicator of whether to normalize the difference to average taxon abundance or not (default TRUE)}
 }
 \value{
 List with the following elements. Both data matrices have subject identifiers 

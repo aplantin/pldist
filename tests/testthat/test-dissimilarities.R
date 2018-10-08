@@ -17,14 +17,17 @@ test_that("dissimilarities give expected results", {
   colnames(otus) <- paste("otu", 1:3, sep = "")
   set.seed(5); sim.tree <- rtree(3, tip.label = paste("otu", 1:3, sep = ""))
   
-  paired.dat <- pltransform(otus, metadata, paired = TRUE)
-  longit.dat <- pltransform(otus, metadata, paired = FALSE) 
+  #paired.dat.n <- pltransform(otus, metadata, paired = TRUE)
+  #longit.dat.n <- pltransform(otus, metadata, paired = FALSE) 
+  sub1 <- (otus[2,] - otus[1,])
+  sub2 <- (otus[4,] - otus[3,])
+  
   
   ## Bray-Curtis 
   bray.pb <- 1/3
-  bray.pq <- sum(abs(c(0.5+1/6, 0.1-1/6, -1/14+1/2)))/3 
+  bray.pq <- sum(abs(sub2/2 - sub1/2))/3 
   bray.lb <- 2/3
-  bray.lq <- sum(abs(c(2/3, 1/3-0.2, 6/7)))/3
+  bray.lq <- sum(abs(abs(sub2) - abs(sub1)))/3  
 
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "bray")$D[1,2], bray.pb)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, method = "Bray")$D[1,2], bray.pq)
@@ -33,9 +36,9 @@ test_that("dissimilarities give expected results", {
   
   ## Jaccard 
   jac.pb <- 1
-  jac.pq <- 1 - sum(0, 0.1, 1/14)/sum(0.5, 1/6, 0.5)
+  jac.pq <- 1 - sum(0, 0.1, 0.2)/sum(0.2, 0.4, 0.2)
   jac.lb <- 1 
-  jac.lq <- 1 - (1/3 + 0.2 + 1/7)/(1 + 1/3 + 1)
+  jac.lq <- 1 - sum(pmin(abs(sub1), abs(sub2)))/sum(pmax(abs(sub1), abs(sub2)))
   
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "jaccard")$D[1,2], jac.pb)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, method = "jac")$D[1,2], jac.pq)
@@ -44,9 +47,9 @@ test_that("dissimilarities give expected results", {
   
   ## Kulczynski 
   kul.pb <- 1 - 1/3
-  kul.pq <- 1 - 0.5 * (1/(0.5+0.1+1/14) + 1/(1/6+1/6+0.5)) * (0.1 + 1/14)
+  kul.pq <- 1 - 0.5 * sum( (1/sum(abs(sub1)) + 1/sum(abs(sub2))) * pmin(abs(sub1), abs(sub2)) * as.numeric(sign(sub1) == sign(sub2)))
   kul.lb <- 1 
-  kul.lq <- 1 - 0.5 * (1/(1 + 0.2 + 1/7) + 1/(1 + 2/3)) * sum(c(1/3, 0.2, 1/7))
+  kul.lq <- 1 - 0.5 * sum( (1/sum(abs(sub1)) + 1/sum(abs(sub2))) * pmin(abs(sub1), abs(sub2)))
   
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "kul")$D[1,2], kul.pb)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, method = "kul")$D[1,2], kul.pq)
@@ -56,9 +59,9 @@ test_that("dissimilarities give expected results", {
   
   ## Gower 
   gow.pb <- 1/3 * (0.5/1 + 0 + 0.5/0.5) 
-  gow.pq <- 1/3 * ((2/3)/1 + (1/6-0.1)/0.4 + (0.5+1/14)/(0.5+1/14)) 
+  gow.pq <- 1/3 * sum(abs(sub1 - sub2)[1:2]/c(0.3, 0.3))
   gow.lb <- 1/3 * (1 + 0 + 1)
-  gow.lq <- 1/3 * (1 + (1/3-0.2) / 0.8 + 1)
+  gow.lq <- 1/3 * sum(abs(abs(sub1) - abs(sub2))[1:2]/c(0.1, 0.3))
   
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "gower")$D[1,2], gow.pb)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, method = "Gower")$D[1,2], gow.pq)

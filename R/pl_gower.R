@@ -21,12 +21,12 @@ gower <- function(tsf.data, binary) {
   out.D <- matrix(0, n, n) 
   rownames(out.D) = colnames(out.D) = rownames(dat)
   
-  taxmax <- apply(dat, 2, max)
-  taxmin <- apply(dat, 2, min)
+  taxmax <- round(apply(dat, 2, max), 8)
+  taxmin <- round(apply(dat, 2, min), 8)
+  idx = which(taxmax != taxmin)
   
   for (i in 1:(n-1)) {
     for (j in (i+1):n) {
-      idx = which(taxmax != taxmin)
       out.D[i, j] = out.D[j, i] = sum( abs(dat[i,idx] - dat[j,idx]) / (taxmax[idx] - taxmin[idx]) )/m
     }
   }

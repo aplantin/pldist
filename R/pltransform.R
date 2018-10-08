@@ -11,6 +11,7 @@
 #' @param metadata Data frame with three columns: subject identifiers (n unique values, column name "subjID"), 
 #'     sample identifiers (must match row names of otu.tab, column name "sampID"), 
 #'     and time point or group identifier (must have two unique values for paired transformation). 
+#' @param norm Indicator of whether to normalize the difference to average taxon abundance or not (default TRUE)
 #' @importFrom stats aggregate
 #' 
 #' @return List with the following elements. Both data matrices have subject identifiers 
@@ -21,7 +22,7 @@
 #' 
 #' @export
 #' 
-tsf_paired <- function(otus, metadata) {
+tsf_paired <- function(otus, metadata, norm = TRUE) {
   ## Prepare output data frame 
   n <- length(unique(metadata$subjID))
   out.data <- matrix(0, nrow = n, ncol = ncol(otus))
@@ -35,7 +36,12 @@ tsf_paired <- function(otus, metadata) {
     t2.idx <- which(metadata$subjID == rownames(out.data)[i] & metadata$time == 2)
     out.binary[i, ] <- 0.5 * (as.numeric(otus[t2.idx,] > 0) - as.numeric(otus[t1.idx,] > 0)) 
     nonz <- which(otus[t2.idx,] != 0 | otus[t1.idx,] != 0) 
-    out.quant[i, nonz] <- 0.5 * (otus[t2.idx, nonz] - otus[t1.idx, nonz]) / (otus[t2.idx, nonz] + otus[t1.idx, nonz]) 
+    if (norm) {
+      out.quant[i, nonz] <- 0.5 * (otus[t2.idx, nonz] - otus[t1.idx, nonz]) / (otus[t2.idx, nonz] + otus[t1.idx, nonz]) 
+    } else {
+      out.quant[i, nonz] <- 0.5 * (otus[t2.idx, nonz] - otus[t1.idx, nonz]) 
+    }
+    
     out.avgprop[i, ] <- 0.5 * (otus[t2.idx, ] + otus[t1.idx, ])
   }
   return(list(dat.binary = out.binary, dat.quant = out.quant, avg.prop = out.avgprop))   
@@ -55,6 +61,7 @@ tsf_paired <- function(otus, metadata) {
 #'     sample identifiers (must match row names of otu.tab, column name "sampID"), 
 #'     and time point or group identifier (if using longitudinal distances, this must be numeric or 
 #'     convertable to numeric). 
+#' @param norm Indicator of whether to normalize the difference to average taxon abundance or not (default TRUE)
 #' 
 #' @return List with the following elements. Both data matrices have subject identifiers 
 #'     as row names and OTU identifiers as column names.  
@@ -64,7 +71,7 @@ tsf_paired <- function(otus, metadata) {
 #'  
 #' @export
 #'  
-tsf_long <- function(otus, metadata) {
+tsf_long <- function(otus, metadata, norm = TRUE) {
   ## Prepare output data frame
   n <- length(unique(metadata$subjID))
   out.data <- matrix(0, nrow = n, ncol = ncol(otus))
@@ -94,8 +101,14 @@ tsf_long <- function(otus, metadata) {
       dk.uw = dk.uw + (1/(subj.times[j+1] - subj.times[j])) * 
         abs(as.numeric(subj.otu[(j+1), ] > 0) - as.numeric(subj.otu[j, ] > 0))
       nonz <- which(subj.otu[(j+1), ] != 0 | subj.otu[j, ] != 0)
-      dk.g[nonz] = dk.g[nonz] + (1/(subj.times[j+1] - subj.times[j])) * 
-        abs((subj.otu[(j+1), nonz] - subj.otu[j, nonz])/(subj.otu[(j+1), nonz] + subj.otu[j, nonz]))
+      if (norm) {
+        dk.g[nonz] = dk.g[nonz] + (1/(subj.times[j+1] - subj.times[j])) * 
+          abs((subj.otu[(j+1), nonz] - subj.otu[j, nonz])/(subj.otu[(j+1), nonz] + subj.otu[j, nonz]))
+      } else {
+        dk.g[nonz] = dk.g[nonz] + (1/(subj.times[j+1] - subj.times[j])) * 
+          abs(subj.otu[(j+1), nonz] - subj.otu[j, nonz])
+      }
+       
       cumprop = cumprop + subj.otu[(j+1), ]
     }
     dk.uw = dk.uw/(qi - 1)
@@ -146,6 +159,7 @@ counts2props <- function(x) {
 #'     longitudinal version (FALSE). Paired analyis is only possible when there are exactly 2 
 #'     unique time points/identifiers for each subject or pair. 
 #' @param check.input Logical indicating whether to check input values (default TRUE). 
+#' @param norm Logical indicating whether quantitative differences should be normalized to average taxon abundance (default TRUE)
 #' 
 #' @return List with the following elements. Both data matrices have subject identifiers 
 #'     as row names and OTU identifiers as column names.  
@@ -164,7 +178,7 @@ counts2props <- function(x) {
 #'     
 #' @export 
 #' 
-pltransform <- function(otus, metadata, paired, check.input = TRUE) {
+pltransform <- function(otus, metadata, paired, check.input = TRUE, norm = TRUE) {
   if (check.input) {
     okdat <- check_input(otus, metadata, paired)
     otus <- okdat$otus 
@@ -174,9 +188,9 @@ pltransform <- function(otus, metadata, paired, check.input = TRUE) {
   
   ## calculate appropriate transformations 
   if (paired) {
-    res <- tsf_paired(otus, metadata)
+    res <- tsf_paired(otus, metadata, norm)
   } else {
-    res <- tsf_long(otus, metadata)
+    res <- tsf_long(otus, metadata, norm)
     if (length(unique(table(metadata$time))) != 1) { balanced = FALSE } else { balanced = TRUE } 
   }
   if (paired) { type = "paired" 

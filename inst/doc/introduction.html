@@ -12,7 +12,7 @@
 
 <meta name="author" content="Anna Plantinga" />
 
-<meta name="date" content="2018-10-08" />
+<meta name="date" content="2018-10-09" />
 
 <title>Introduction to pldist</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to pldist</h1>
 <h4 class="author"><em>Anna Plantinga</em></h4>
-<h4 class="date"><em>2018-10-08</em></h4>
+<h4 class="date"><em>2018-10-09</em></h4>
 
 
 
@@ -107,27 +107,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <p>The big picture of this set of methods is a two-step process in which (1) OTU data at multiple time points for a subject are summarized into the change across time for each OTU, and (2) these changes across time are compared between subjects.</p>
-<p>Four transformations are available to define changes within a subject. All are discussed in more detail in <a href="#transformations-and-dissimilarities">Transformations and Dissimilarities</a>. The choices distinguishing these four transformations are <strong>paired vs. longitudinal</strong> and <strong>qualitative vs. quantitative</strong>.</p>
+<p>Four main transformations are available to define changes within a subject. All are discussed in more detail in <a href="#transformations-and-dissimilarities">Transformations and Dissimilarities</a>. The choices distinguishing these four transformations are <strong>paired vs. longitudinal</strong> and <strong>qualitative vs. quantitative</strong>.</p>
 <p>First, <strong>paired vs. longitudinal</strong>: - The paired transformations allow exactly two time points per subject (or pairs of subjects). They account for direction of change, so if a taxon becomes 20% more abundant in one subject and 20% less abundant in another subject, the difference in changes across time is 40%. - The longitudinal transformations allow any number of time points per subject, including different numbers of observations or time between observations for different subjects. They do not account for direction of change, so if a taxon becomes 20% more abundant in one subject and 20% less abundant in another subject, those subjects experienced <em>the same</em> magnitude of change with respect to that taxon.</p>
-<p>Secondly, <strong>qualitative vs. quantitative</strong>: - For qualitative transformations, only changes in presence or absence of OTUs contribute to the distance or dissimilarity. A 20% change in OTU abundance does not matter, whereas an OTU that was present at time 1 but not observed at time 2 does contribute to the distance. - For quantitative transformations, changes in OTU abundance do matter. If an OTU changes by 20% in relative abundance for one subject and 40% for another subject, those are considered different changes (and contribute to the overall dissimilarity between those two subjects).</p>
+<p>Secondly, <strong>qualitative vs. quantitative</strong>: - For qualitative transformations, only changes in presence or absence of OTUs contribute to the distance or dissimilarity. A 20% change in OTU abundance does not matter, whereas an OTU that was present at time 1 but not observed at time 2 does contribute to the distance. - For quantitative transformations, changes in OTU abundance do matter. If an OTU changes by 20% in relative abundance for one subject and 40% for another subject, those are considered different changes (and contribute to the overall dissimilarity between those two subjects). A “normalized” and “unnormalized” (to the average abundance of that taxon) version are available.</p>
 <p>Once the selected data transformation has been applied, a corresponding version of the Bray-Curtis, Jaccard, Kulczynski, Gower, or UniFrac distance metrics may be calculated between subjects. The resulting distance matrices may be used in any distance-based analysis, including ordination analysis, kernel machine regression methods, permutation-based testing, and others.</p>
 <p>The author and maintainer of the <code>pldist</code> R package is Anna Plantinga.</p>
 </div>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>Currently, the package may only be downloaded and installed from GitHub using the <code>devtools</code> package. Type the following command in your R console:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only run if you don't have devtools installed </span>
-<span class="co">#install.packages(&quot;devtools&quot;); library(devtools) </span>
-devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;aplantin/pldist&quot;</span>)
-<span class="co">#&gt; Downloading GitHub repo aplantin/pldist@master</span>
-<span class="co">#&gt; from URL https://api.github.com/repos/aplantin/pldist/zipball/master</span>
-<span class="co">#&gt; Installing pldist</span>
-<span class="co">#&gt; '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \</span>
-<span class="co">#&gt;   --no-environ --no-save --no-restore --quiet CMD INSTALL  \</span>
-<span class="co">#&gt;   '/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmplVksdZ/devtoolsfcf12b50c96/aplantin-pldist-89f5d28'  \</span>
-<span class="co">#&gt;   --library='/private/var/folders/yw/fmxy3ljs5yxf1frzv8b2fbhh0000gn/T/RtmpyVop3R/Rinstfbd5e17ac70'  \</span>
-<span class="co">#&gt;   --install-tests</span>
-<span class="co">#&gt; </span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#install.packages(&quot;devtools&quot;) #run if you don't have devtools installed </span>
+<span class="kw">library</span>(devtools)  
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;aplantin/pldist&quot;</span>)</code></pre></div>
 </div>
 <div id="usage-guide" class="section level2">
 <h2>Usage Guide</h2>
@@ -154,6 +145,7 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 </ul></li>
 <li>Logical indicating whether the data are paired</li>
 <li>Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred.</li>
+<li>Logical indicating whether to use normalized version (default TRUE; only affects the quantitative transformation)</li>
 </ul>
 <p>The output consists of a list with components:</p>
 <ul>
@@ -177,7 +169,7 @@ paired.meta[<span class="dv">1</span><span class="op">:</span><span class="dv">4
 <span class="co">#&gt; 4  subj2 subj2b    2</span>
 
 <span class="co"># Transformation function </span>
-res &lt;-<span class="st"> </span><span class="kw">pltransform</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">check.input =</span> <span class="ot">TRUE</span>)
+res &lt;-<span class="st"> </span><span class="kw">pltransform</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">check.input =</span> <span class="ot">TRUE</span>, <span class="dt">norm =</span> <span class="ot">TRUE</span>)
 
 <span class="co"># Binary transformation </span>
 <span class="co"># 0.5 indicates OTU was present at Time 2, absent at Time 1</span>
@@ -216,7 +208,7 @@ res<span class="op">$</span>type
 <span class="co"># For comparison, this uses a longitudinal transformation (applied at 2 time points)</span>
 <span class="co"># due to the argument &quot;paired = FALSE&quot;. </span>
 <span class="co"># Type is &quot;Balanced&quot; because same time points were observed for all subjects </span>
-res2 &lt;-<span class="st"> </span><span class="kw">pltransform</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">check.input =</span> <span class="ot">TRUE</span>)
+res2 &lt;-<span class="st"> </span><span class="kw">pltransform</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">check.input =</span> <span class="ot">TRUE</span>, <span class="dt">norm =</span> <span class="ot">TRUE</span>)
 res2<span class="op">$</span>type   
 <span class="co">#&gt; [1] &quot;balanced longitudinal&quot;</span>
 
@@ -299,11 +291,11 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gower distance, paired &amp; quantitative transformation </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
 <span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
-<span class="co">#&gt; subj1 0.0000000 0.4839758 0.4455620 0.5052843 0.5766593</span>
-<span class="co">#&gt; subj2 0.4839758 0.0000000 0.6109036 0.4404913 0.4576500</span>
-<span class="co">#&gt; subj3 0.4455620 0.6109036 0.0000000 0.5056862 0.7235955</span>
-<span class="co">#&gt; subj4 0.5052843 0.4404913 0.5056862 0.0000000 0.3823376</span>
-<span class="co">#&gt; subj5 0.5766593 0.4576500 0.7235955 0.3823376 0.0000000</span>
+<span class="co">#&gt; subj1 0.0000000 0.4337101 0.4328451 0.3175525 0.4490965</span>
+<span class="co">#&gt; subj2 0.4337101 0.0000000 0.5183522 0.4801613 0.5887674</span>
+<span class="co">#&gt; subj3 0.4328451 0.5183522 0.0000000 0.5121065 0.6714185</span>
+<span class="co">#&gt; subj4 0.3175525 0.4801613 0.5121065 0.0000000 0.4429438</span>
+<span class="co">#&gt; subj5 0.4490965 0.5887674 0.6714185 0.4429438 0.0000000</span>
 
 <span class="co"># Gower distance, paired &amp; qualitative/binary transformation </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">TRUE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
@@ -317,11 +309,11 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 <span class="co"># Gower distance, longitudinal &amp; quantitative transformation </span>
 <span class="kw">pldist</span>(bal.long.otus, bal.long.meta, <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
 <span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
-<span class="co">#&gt; subj1 0.0000000 0.5526350 0.5062275 0.4806651 0.4852043</span>
-<span class="co">#&gt; subj2 0.5526350 0.0000000 0.5642091 0.7113378 0.5168968</span>
-<span class="co">#&gt; subj3 0.5062275 0.5642091 0.0000000 0.4284639 0.4316573</span>
-<span class="co">#&gt; subj4 0.4806651 0.7113378 0.4284639 0.0000000 0.4551940</span>
-<span class="co">#&gt; subj5 0.4852043 0.5168968 0.4316573 0.4551940 0.0000000</span>
+<span class="co">#&gt; subj1 0.0000000 0.5515430 0.4517772 0.3948220 0.4436549</span>
+<span class="co">#&gt; subj2 0.5515430 0.0000000 0.5846495 0.5928627 0.5345943</span>
+<span class="co">#&gt; subj3 0.4517772 0.5846495 0.0000000 0.4485138 0.5013550</span>
+<span class="co">#&gt; subj4 0.3948220 0.5928627 0.4485138 0.0000000 0.2317798</span>
+<span class="co">#&gt; subj5 0.4436549 0.5345943 0.5013550 0.2317798 0.0000000</span>
 
 <span class="co"># Gower distance, longitudinal &amp; qualitative/binary transformation </span>
 <span class="kw">pldist</span>(bal.long.otus, bal.long.meta, <span class="dt">paired =</span> <span class="ot">FALSE</span>, <span class="dt">binary =</span> <span class="ot">TRUE</span>, <span class="dt">method =</span> <span class="st">&quot;gower&quot;</span>)<span class="op">$</span>D
@@ -334,26 +326,26 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 
 <span class="co"># Other distances </span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;bray&quot;</span>)<span class="op">$</span>D
-<span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
-<span class="co">#&gt; subj1 0.0000000 0.3923512 0.3118659 0.3903021 0.4750872</span>
-<span class="co">#&gt; subj2 0.3923512 0.0000000 0.4356975 0.3280185 0.4212443</span>
-<span class="co">#&gt; subj3 0.3118659 0.4356975 0.0000000 0.3763288 0.5184529</span>
-<span class="co">#&gt; subj4 0.3903021 0.3280185 0.3763288 0.0000000 0.2913837</span>
-<span class="co">#&gt; subj5 0.4750872 0.4212443 0.5184529 0.2913837 0.0000000</span>
+<span class="co">#&gt;            subj1      subj2      subj3      subj4      subj5</span>
+<span class="co">#&gt; subj1 0.00000000 0.07312089 0.06300293 0.05629404 0.09845765</span>
+<span class="co">#&gt; subj2 0.07312089 0.00000000 0.08405988 0.07454992 0.11230310</span>
+<span class="co">#&gt; subj3 0.06300293 0.08405988 0.00000000 0.08413844 0.11551773</span>
+<span class="co">#&gt; subj4 0.05629404 0.07454992 0.08413844 0.00000000 0.08601240</span>
+<span class="co">#&gt; subj5 0.09845765 0.11230310 0.11551773 0.08601240 0.00000000</span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;kulczynski&quot;</span>)<span class="op">$</span>D
 <span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
-<span class="co">#&gt; subj1 0.0000000 0.6725624 0.4219094 0.9684359 0.8185846</span>
-<span class="co">#&gt; subj2 0.6725624 0.0000000 0.6443266 1.0000000 0.8281911</span>
-<span class="co">#&gt; subj3 0.4219094 0.6443266 0.0000000 0.5969082 0.7777403</span>
-<span class="co">#&gt; subj4 0.9684359 1.0000000 0.5969082 0.0000000 0.8425175</span>
-<span class="co">#&gt; subj5 0.8185846 0.8281911 0.7777403 0.8425175 0.0000000</span>
+<span class="co">#&gt; subj1 0.0000000 0.7294925 0.4762727 0.9228892 0.8354722</span>
+<span class="co">#&gt; subj2 0.7294925 0.0000000 0.6125571 1.0000000 0.8574528</span>
+<span class="co">#&gt; subj3 0.4762727 0.6125571 0.0000000 0.7973407 0.7604909</span>
+<span class="co">#&gt; subj4 0.9228892 1.0000000 0.7973407 0.0000000 0.9071617</span>
+<span class="co">#&gt; subj5 0.8354722 0.8574528 0.7604909 0.9071617 0.0000000</span>
 <span class="kw">pldist</span>(paired.otus, paired.meta, <span class="dt">paired =</span> <span class="ot">TRUE</span>, <span class="dt">binary =</span> <span class="ot">FALSE</span>, <span class="dt">method =</span> <span class="st">&quot;jaccard&quot;</span>)<span class="op">$</span>D
 <span class="co">#&gt;           subj1     subj2     subj3     subj4     subj5</span>
-<span class="co">#&gt; subj1 0.0000000 0.7447088 0.5481119 0.9899197 0.8590826</span>
-<span class="co">#&gt; subj2 0.7447088 0.0000000 0.7693678 1.0000000 0.8709611</span>
-<span class="co">#&gt; subj3 0.5481119 0.7693678 0.0000000 0.8761344 0.8615110</span>
-<span class="co">#&gt; subj4 0.9899197 1.0000000 0.8761344 0.0000000 0.9412132</span>
-<span class="co">#&gt; subj5 0.8590826 0.8709611 0.8615110 0.9412132 0.0000000</span>
+<span class="co">#&gt; subj1 0.0000000 0.8107920 0.6566234 0.9617714 0.8985643</span>
+<span class="co">#&gt; subj2 0.8107920 0.0000000 0.7268394 1.0000000 0.9150659</span>
+<span class="co">#&gt; subj3 0.6566234 0.7268394 0.0000000 0.9259537 0.8555107</span>
+<span class="co">#&gt; subj4 0.9617714 1.0000000 0.9259537 0.0000000 0.9692795</span>
+<span class="co">#&gt; subj5 0.8985643 0.9150659 0.8555107 0.9692795 0.0000000</span>
 
 <span class="co"># UniFrac additionally requires a phylogenetic tree and gamma values </span>
 <span class="co"># (Gamma controls weight placed on abundant lineages) </span>
@@ -472,20 +464,28 @@ D2.unifrac[, , <span class="st">&quot;d_UW&quot;</span>]  <span class="co"># unw
 <ol style="list-style-type: decimal">
 <li>Paired, Qualitative: <span class="math display">\[
 d_k^A(t_1, t_2) = \frac{1}{2} \cdot \left[ I\left(p_k^{(A, t_1)} &gt; 0\right) - I\left(p_k^{(A, t_2)} &gt; 0\right) \right] \in \lbrace -0.5, 0, 0.5 \rbrace \]</span></li>
-<li>Paired, Quantitative: <span class="math display">\[ 
-d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] \]</span></li>
+<li>Paired, Quantitative:
+<ol style="list-style-type: lower-alpha">
+<li>Normalized: <span class="math display">\[ d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] \]</span></li>
+<li>Unnormalized: <span class="math display">\[ d_k^A(t_1, t_2) = \frac{1}{2} \left( p_k^{(A, t_2)} - p_k^{(A, t_1)} \right) \in [-1, 1] \]</span></li>
+</ol></li>
 <li>Longitudinal, Qualitative: <span class="math display">\[ d_k^A(t_1, \ldots, t_q)  = \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert I(p_k^{A,t_{l+1}} &gt; 0) - I(p_k^{A, t_l} &gt; 0) \right\rvert \]</span></li>
-<li>Longitudinal, Quantitative: <span class="math display">\[ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert \]</span></li>
+<li>Longitudinal, Quantitative:
+<ol style="list-style-type: lower-alpha">
+<li>Normalized: <span class="math display">\[ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert \]</span></li>
+<li>Unnormalized: <span class="math display">\[ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert p_k^{A, t_{l+1}} - p_k^{A, t_l}  \right\rvert \]</span></li>
+</ol></li>
 </ol>
 <p>There are several items to note in comparing these transformations.</p>
 <ul>
 <li>The paired transformation is not equivalent to the longitudinal transformation applied at two time points: the paired transformations incorporate direction of change, whereas the longitudinal versions only summarize absolute magnitude of change.</li>
-<li>Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups.</li>
-<li>Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same <span class="math inline">\(d_k\)</span> as a change from 0.02 to 0.04.
+<li>Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), great caution is advised. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups.</li>
+<li>The “normalized”&quot; quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same normalized <span class="math inline">\(d_k\)</span> as a change from 0.02 to 0.04. This is not true for the “unnormalized” quantitative transformations.
 <ul>
-<li>In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter <span class="math inline">\(\gamma\)</span>. No such adjustments are currently available for other dissimilarities.</li>
+<li>In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter <span class="math inline">\(\gamma\)</span>.</li>
+<li>Without any such adjustments for other dissimilarities, default behavior is to use the “unnormalized” quantitative transformations for all other dissimilarities. These tend to place higher weight on more abundant taxa.</li>
 </ul></li>
-<li>The longitudinal <span class="math inline">\(d_k\)</span> are always nonnegative and, depending on the choice of <span class="math inline">\(t_k\)</span> units, may take any value. The paired <span class="math inline">\(d_k\)</span> may be negative or positive, but are always between -0.5 and 0.5.</li>
+<li>The longitudinal <span class="math inline">\(d_k\)</span> are always nonnegative and, depending on the choice of <span class="math inline">\(t_k\)</span> units, may take any value. The paired <span class="math inline">\(d_k\)</span> may be negative or positive.</li>
 </ul>
 </div>
 <div id="bray-curtis" class="section level3">

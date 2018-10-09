@@ -48,7 +48,7 @@ pldist_all <- function(otus, metadata, paired = FALSE, method = c("b", "g", "j",
   for (mm in 1:length(method)) {
     if (method[mm] != "unifrac") {
       ## Calculate transformed data and apply distance (all except UniFrac) 
-      tsf.res <- pltransform(otus = otus, metadata = metadata, paired = paired, check.input = FALSE)
+      tsf.res <- pltransform(otus = otus, metadata = metadata, paired = paired, check.input = FALSE, norm = FALSE)
       this.D.bin <- switch(method[mm], 
                            braycurtis = braycurtis(tsf.res, binary = TRUE), 
                            jaccard = jaccard(tsf.res, paired = paired, binary = TRUE), 

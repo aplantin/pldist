@@ -15,7 +15,7 @@ test_that("dissimilarities are zero with identical changes", {
   colnames(otus) <- paste("otu", 1:3, sep = "")
   sim.tree <- rtree(3, tip.label = paste("otu", 1:3, sep = ""))
   
-  ## Paired 
+  ## Paired, no CLR
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "bray")$D[1,2], 0)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, method = "bray")$D[1,2], 0)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "jac")$D[1,2], 0)
@@ -27,7 +27,7 @@ test_that("dissimilarities are zero with identical changes", {
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_0"], 0)
   expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_1"], 0)
   
-  ## Not paired 
+  ## Not paired, no CLR 
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, method = "bray")$D[1,2], 0)
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = FALSE, method = "bray")$D[1,2], 0)
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, method = "jac")$D[1,2], 0)
@@ -38,5 +38,29 @@ test_that("dissimilarities are zero with identical changes", {
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = FALSE, method = "gow")$D[1,2], 0)
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_0"], 0)
   expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_1"], 0)
+  
+  ## Paired, CLR 
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, clr = TRUE, method = "bray")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, clr = TRUE, method = "bray")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, clr = TRUE, method = "jac")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, clr = TRUE, method = "jac")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, clr = TRUE, method = "kul")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, clr = TRUE, method = "kul")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, clr = TRUE, method = "gow")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = FALSE, clr = TRUE, method = "gow")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, clr = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_0"], 0)
+  expect_equal(pldist(otus, metadata, paired = TRUE, binary = TRUE, clr = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_1"], 0)
+  
+  ## Not paired, CLR 
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, clr = TRUE, method = "bray")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = FALSE, clr = TRUE, method = "bray")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, clr = TRUE, method = "jac")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = FALSE, clr = TRUE, method = "jac")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, clr = TRUE, method = "kul")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = FALSE, clr = TRUE, method = "kul")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, clr = TRUE, method = "gow")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = FALSE, clr = TRUE, method = "gow")$D[1,2], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, clr = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_0"], 0)
+  expect_equal(pldist(otus, metadata, paired = FALSE, binary = TRUE, clr = TRUE, method = "unifrac", tree = sim.tree)$D[1,2,"d_1"], 0)
 })
 

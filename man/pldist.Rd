@@ -4,8 +4,8 @@
 \alias{pldist}
 \title{pldist}
 \usage{
-pldist(otus, metadata, paired = FALSE, binary = FALSE, method,
-  tree = NULL, gam = c(0, 0.5, 1))
+pldist(otus, metadata, paired = FALSE, binary = FALSE, clr = FALSE,
+  pseudoct = NULL, method, tree = NULL, gam = c(0, 0.5, 1))
 }
 \arguments{
 \item{otus}{OTU count or frequency table, containing one row per sample and one column per OTU.}
@@ -22,6 +22,13 @@ unique time points/identifiers for each subject or pair.}
 \item{binary}{Logical indicating whether to use the qualitative (TRUE) or quantitative (FALSE) 
 version of each metric. Qualitative analysis only incorporates changes in OTU presence or 
 absence; quantitative analysis incorporates changes in abundance.}
+
+\item{clr}{Logical indicating whether to use CLR-transformed abundances (TRUE) or original
+proportions (FALSE). Default FALSE.}
+
+\item{pseudoct}{Pseudocount value to be added to each cell of the matrix prior to CLR transformation. 
+Default is NULL; if NULL, 0.5 will be added if data are counts, min(1e-06, 0.5*min(nonzero p)) 
+will be added if data are proportions, and nothing will be added if no cells have zero values.}
 
 \item{method}{Desired distance metric. Choices are braycurtis, jaccard, kulczynski, gower, and 
 unifrac, or any unambiguous abbreviation thereof.}

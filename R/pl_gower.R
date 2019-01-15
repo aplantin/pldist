@@ -19,11 +19,11 @@ gower <- function(tsf.data, binary) {
   
   n = nrow(dat); m = ncol(dat) 
   out.D <- matrix(0, n, n) 
-  rownames(out.D) = colnames(out.D) = rownames(dat)
+  rownames(out.D) = colnames(out.D) = rownames(dat) 
   
-  taxmax <- round(apply(dat, 2, max), 8)
-  taxmin <- round(apply(dat, 2, min), 8)
-  idx = which(taxmax != taxmin)
+  taxmax <- round(apply(dat, 2, max), 8) 
+  taxmin <- round(apply(dat, 2, min), 8) 
+  idx = which(taxmax != taxmin) 
   
   for (i in 1:(n-1)) {
     for (j in (i+1):n) {

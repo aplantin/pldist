@@ -4,47 +4,41 @@
 \alias{pltransform}
 \title{pltransform}
 \usage{
-pltransform(otus, metadata, paired, check.input = TRUE, norm = TRUE)
+pltransform(otu.data, paired, norm = TRUE)
 }
 \arguments{
-\item{otus}{Matrix of OTU counts or proportions. Notes: (1) Will be transformed to 
-proportions if it's not already; (2) Row names must be sample identifiers 
-(matching metadata), and column names must be OTU identifiers (enforced if 
-using UniFrac distances).}
-
-\item{metadata}{Data frame with three columns: subject identifiers (n unique values, column name "subjID"), 
-sample identifiers (must match row names of otu.tab, column name "sampID"), 
-and time point or group identifier (if using longitudinal distances, this must be numeric or 
-convertable to numeric).}
+\item{otu.data}{OTU data after pre-processing using data_prep() function. List with elements 
+otu.props, otu.clr, and metadata.}
 
 \item{paired}{Logical indicating whether to use the paired version of the metric (TRUE) or the 
 longitudinal version (FALSE). Paired analyis is only possible when there are exactly 2 
 unique time points/identifiers for each subject or pair.}
 
-\item{check.input}{Logical indicating whether to check input values (default TRUE).}
-
-\item{norm}{Logical indicating whether quantitative differences should be normalized to average taxon abundance (default TRUE)}
+\item{norm}{Logical indicating whether quantitative differences should be normalized by 
+taxon abundance (default TRUE)}
 }
 \value{
-List with the following elements. Both data matrices have subject identifiers 
-    as row names and OTU identifiers as column names.  
-    \item{dat.binary}{n x p matrix of data after longitudinal, binary/qualitative transformation} 
-    \item{dat.quant}{n x p matrix of data after longitudinal, quantitative transformation}
+List with the following elements. Data matrices have subject identifiers 
+    as row names and OTU identifiers as column names.   
+    \item{dat.binary}{n x p matrix of data after binary/qualitative transformation} 
+    \item{dat.quant.prop}{n x p matrix of data after quantitative transformation applied to proportions}
+    \item{dat.quant.prop}{n x p matrix of data after quantitative transformation applied to CLR-transformed proportions}
     \item{avg.prop}{n x p matrix with overall average proportion of each taxon}
-    \item{type}{Type of transformation that was used (paired, balanced longitudinal, 
-    unbalanced longitudinal) with a warning if unbalanced longitudinal.}
+    \item{type}{Type of transformation that was used (paired, balanced longitudinal, unbalanced longitudinal) with a warning if unbalanced longitudinal.}
 }
 \description{
-OTU transformation for longitudinal data. Computes average within-subject change 
-    (in presence for qualitative metrics, abundance for quantitative metrics) 
-    during one unit of time for each taxon.
+OTU transformation for paired and longitudinal data. Computes average within-subject 
+    change (in presence for qualitative metrics, proportional or CLR-transformed 
+    abundance for quantitative metrics) during one unit of time for each taxon.
 }
 \examples{
 data("paired.otus")
 data("paired.meta")
  # paired transformation
-res1 <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE) 
+otudat <- data_prep(paired.otus, paired.meta, paired = TRUE) 
+res1 <- pltransform(otudat, paired = TRUE, norm = TRUE) 
  # longitudinal transformation 
-res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE) 
+otudat <- data_prep(paired.otus, paired.meta, paired = FALSE)
+res2 <- pltransform(otudat, paired = FALSE, norm = TRUE) 
     
 }

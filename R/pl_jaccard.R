@@ -38,7 +38,7 @@ jaccard <- function(tsf.data, paired, binary) {
   
   n = nrow(dat); m = ncol(dat) 
   out.D <- matrix(0, n, n) 
-  rownames(out.D) = colnames(out.D) = rownames(dat)
+  rownames(out.D) = colnames(out.D) = rownames(dat) 
   
   if (paired) {
     if (binary) {
@@ -46,14 +46,9 @@ jaccard <- function(tsf.data, paired, binary) {
         for (j in (i+1):n) {
           num = sum(as.numeric(dat[i, ] == dat[j, ] & dat[i, ] != 0))
           denom = sum(as.numeric(dat[i, ] != 0 | dat[j, ] != 0))
-          if (denom != 0) {
-            out.D[i,j] = out.D[j,i] = 1 - num/denom
-          } else {
-            out.D[i,j] = out.D[j,i] = 0
-          }
-          
-        }
-      }
+          if (denom != 0) { out.D[i,j] = out.D[j,i] = 1 - num/denom
+          } else { out.D[i,j] = out.D[j,i] = 0 }
+      } }
     } else { # paired, not binary 
       for (i in 1:(n-1)) {
         for (j in (i+1):n) {
@@ -61,16 +56,13 @@ jaccard <- function(tsf.data, paired, binary) {
           num = sum(pmin(abs(dat[i,idx]), abs(dat[j,idx])) * flexsign(dat[i,idx], dat[j,idx]))
           denom = sum(pmax(abs(dat[i,idx]), abs(dat[j,idx])))
           out.D[i, j] = out.D[j, i] = 1 - num/denom
-        }
-      }
-    }
+    } } }
   } else {  # not paired 
     for (i in 1:(n-1)) {
       for (j in (i+1):n) {
         idx = which(pmax(dat[i,], dat[j,]) != 0)
         out.D[i,j] = out.D[j,i] = 1 - sum(pmin(dat[i,idx],dat[j,idx])) / sum(pmax(dat[i,idx],dat[j,idx]))
-      }
-    }
+    } }
   }
   return(out.D) 
 }

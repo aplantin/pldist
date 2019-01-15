@@ -4,8 +4,9 @@
 \alias{pldist_all}
 \title{pldist_all}
 \usage{
-pldist_all(otus, metadata, paired = FALSE, method = c("b", "g", "j",
-  "k", "u"), tree = NULL, gam = c(0, 0.5, 1))
+pldist_all(otus, metadata, paired = FALSE, clr = FALSE,
+  pseudoct = NULL, method = c("b", "g", "j", "k", "u"), tree = NULL,
+  gam = c(0, 0.5, 1))
 }
 \arguments{
 \item{otus}{OTU count or frequency table, containing one row per sample and one column per OTU.}
@@ -18,6 +19,13 @@ convertable to numeric).}
 \item{paired}{Logical indicating whether to use the paired version of the metric (TRUE) or the 
 longitudinal version (FALSE). Paired analyis is only possible when there are exactly 2 
 unique time points/identifiers for each subject or pair.}
+
+\item{clr}{Logical indicating whether to use CLR-transformed abundances (TRUE) or original
+proportions (FALSE) in quantitative distances/dissimilarities. Default FALSE.}
+
+\item{pseudoct}{Pseudocount value to be added to each cell of the matrix prior to CLR transformation. 
+Default is NULL; if NULL, 0.5 will be added if data are counts, min(1e-06, 0.5*min(nonzero p)) 
+will be added if data are proportions, and nothing will be added if no cells have zero values.}
 
 \item{method}{Desired distance metric(s). Include a vector with any combination of braycurtis,
 jaccard, kulczynski, gower, and unifrac, or any unambiguous abbreviation thereof.}

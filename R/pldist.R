@@ -16,6 +16,11 @@
 #' @param binary Logical indicating whether to use the qualitative (TRUE) or quantitative (FALSE) 
 #'     version of each metric. Qualitative analysis only incorporates changes in OTU presence or 
 #'     absence; quantitative analysis incorporates changes in abundance. 
+#' @param clr Logical indicating whether to use CLR-transformed abundances (TRUE) or original
+#'     proportions (FALSE). Default FALSE. 
+#' @param pseudoct Pseudocount value to be added to each cell of the matrix prior to CLR transformation. 
+#'     Default is NULL; if NULL, 0.5 will be added if data are counts, min(1e-06, 0.5*min(nonzero p)) 
+#'     will be added if data are proportions, and nothing will be added if no cells have zero values. 
 #' @param method Desired distance metric. Choices are braycurtis, jaccard, kulczynski, gower, and 
 #'     unifrac, or any unambiguous abbreviation thereof. 
 #' @param tree Rooted phylogenetic tree of R class "phylo". Default NULL; only needed for 
@@ -57,7 +62,8 @@
 #'     
 #' @export
 #'
-pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree = NULL, gam = c(0, 0.5, 1)) {
+pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, clr = FALSE, pseudoct = NULL, 
+                   method, tree = NULL, gam = c(0, 0.5, 1)) {
   ## Find desired method 
   method.opts = c("braycurtis", "jaccard", "kulczynski", "gower", "unifrac")
   this.method = pmatch(trimws(tolower(method)), method.opts, nomatch = NA)
@@ -65,17 +71,14 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree 
     stop("Method does not match any expected methods. Please see list of options in documentation.")
   } 
   method = method.opts[this.method]
-  
-  okdat <- check_input(otus = otus, metadata = metadata, paired = paired)
-  otus <- okdat$otus 
-  metadata <- okdat$metadata 
-  remove(okdat) 
-  
+   
   ## Calculate distances/dissimilarities 
-  
   if (method.opts[this.method] != "unifrac") {
     ## Calculate transformed data and apply distance (all except UniFrac) 
-    tsf.res <- pltransform(otus = otus, metadata = metadata, paired = paired, check.input = FALSE, norm = FALSE)
+    otu.prepdat <- data_prep(otus = otus, metadata = metadata, paired = paired, pseudoct = pseudoct)
+    tsfdat <- pltransform(otu.prepdat, paired = paired, norm = FALSE)  
+    if (clr) { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.clr)
+    } else { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.prop) }
     D <- switch(method, 
                 braycurtis = braycurtis(tsf.res, binary = binary), 
                 jaccard = jaccard(tsf.res, paired = paired, binary = binary), 
@@ -86,29 +89,35 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, method, tree 
     ## Calculate paired/longitudinal UniFrac dissimilarities 
     if (is.null(tree)) stop("Tree is required for UniFrac family metrics.")
     if (!is.rooted(tree)) stop("Rooted phylogenetic tree required!") 
-    D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)  #norm = TRUE
+    if (clr) {
+      D <- clr_LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, pseudocount = pseudoct)
+    } else {
+      D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)
+    }
   } 
   
   if (paired) {
     if (method != "unifrac") {
-      if (binary) {
-        type = paste("Method: ", method, "; Paired, Binary") 
+      if (binary) { type = paste("Method: ", method, "; Paired, Binary") 
       } else {
-        type = paste("Method: ", method, "; Paired, Quantitative") 
-      }
+        if (clr) { type = paste("Method: ", method, "; Paired, Quantitative (CLR-transformed)") 
+        } else { type = paste("Method: ", method, "; Paired, Quantitative") 
+        } }
     } else {
-      type = paste("UniFrac family; Paired") 
-    } 
+      if (clr) { type = paste("UniFrac family; Paired (CLR-transformed)") 
+      } else { type = paste("UniFrac family; Paired") 
+      } } 
   } else {
     if (method != "unifrac") {
-      if (binary) {
-        type = paste("Method: ", method, "; Longitudinal, Binary") 
+      if (binary) { type = paste("Method: ", method, "; Longitudinal, Binary") 
       } else {
-        type = paste("Method: ", method, "; Longitudinal, Quantitative") 
-      }
+        if (clr) { type = paste("Method: ", method, "; Longitudinal, Quantitative (CLR-transformed)") 
+        } else { type = paste("Method: ", method, "; Longitudinal, Quantitative") 
+        } }
     } else {
-      type = paste("UniFrac family; Longitudinal") 
-    } 
+      if (clr) { type = paste("UniFrac family; Longitudinal (CLR-transformed)") 
+      } else { type = paste("UniFrac family; Longitudinal") 
+      } } 
   }
   return(list(D = D, type = type)) 
 }

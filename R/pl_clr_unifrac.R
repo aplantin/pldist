@@ -1,9 +1,11 @@
-#' LUniFrac 
+#' clr_LUniFrac 
 #'
 #' Longitudinal UniFrac distances for comparing changes in
-#' microbial communities across 2 time points.
+#' microbial communities across 2 time points, using CLR-transformed data.
 #'
-#' Based in part on Jun Chen & Hongzhe Li (2012), GUniFrac.
+#' Based in large part on Jun Chen & Hongzhe Li (2012), GUniFrac. 
+#' With reference to the GitHub account of user ruthgrace, repository 
+#' CLRUniFrac (this method is not associated with a publication). 
 #'
 #' Computes difference between time points and then calculates
 #' difference of these differences, resulting in a dissimilarity
@@ -16,11 +18,14 @@
 #'    and time or group indicator (numeric variable, or factor with levels such that as.numeric returns 
 #'    the desired ordering). Column names should be subjID, sampID, time. 
 #' @param tree Rooted phylogenetic tree of R class "phylo"
-#' @param gam Parameter controlling weight on abundant lineages. The same weight is 
-#'    used within a subjects as between subjects.
+#' @param gam Parameter controlling weighting factor for average taxon abundance. 
 #' @param paired Logical indicating whether to use the paired (TRUE) or longitudinal (FALSE) transformation. 
-#' @param check.input Logical indicating whether to check the function input values for formatting or 
-#'    entry errors (default TRUE). 
+#' @param pseudocount Pseudocount to be added to all values in OTU matrix prior to CLR transformation. 
+#'     Default NULL. If NULL, then 0.5 is added if entries are counts, or min(1e-06, 0.5*min(nonzero p)) 
+#'     if entries are proportions. If all entries are nonzero, nothing is added. 
+#'     
+#' @importFrom phytools getDescendants 
+#' 
 #' @return Returns a (K+1) dimensional array containing the longitudinal UniFrac dissimilarities 
 #'    with the K specified gamma values plus the unweighted distance. The unweighted dissimilarity 
 #'    matrix may be accessed by result[,,"d_UW"], and the generalized dissimilarities by result[,,"d_G"] 
@@ -30,23 +35,16 @@
 #' data("bal.long.otus")
 #' data("bal.long.meta")
 #' data("sim.tree")
-#' D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, 
-#'     tree = sim.tree, gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
+#' D2.unifrac <- clr_LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, 
+#'     tree = sim.tree, gam = c(0, 0.5, 1), paired = FALSE)
 #' D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
 #' D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
 #' 
 #' @export
 #' 
-LUniFrac <- function(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired, check.input = TRUE) {
-  n <- nrow(otu.tab)
-  
-  # Check input data 
-  if (check.input) {
-    okdat <- data_prep(otu.tab, metadata, paired)
-    otu.tab <- okdat$otu.props 
-    metadata <- okdat$metadata 
-    remove(okdat) 
-  }
+clr_LUniFrac <- function(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired, pseudocount = NULL) {
+  # check data 
+  temp <- data_prep(otu.tab, metadata, paired)  # just for data checking, not transformations
   
   # Check OTU name consistency
   if (sum(!(colnames(otu.tab) %in% tree$tip.label)) != 0) {
@@ -65,37 +63,77 @@ LUniFrac <- function(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired, check.
   tip.label <- tree$tip.label
   otu.tab <- otu.tab[, tip.label]
   
-  ntip <- length(tip.label)
+  # Add pseudocount and re-close to proportions 
+  otu.psct = otu.tab
+  if (any(otu.psct == 0)) {
+    if (is.null(pseudocount)) {
+      subjsums <- apply(otu.psct, 1, FUN = function(x) sum(x))
+      if (all(subjsums == 1)) {  # data are proportions 
+        otu.psct <- otu.psct + min(1e-06, otu.psct[otu.psct != 0])
+      } else { otu.psct <- otu.psct + 0.5 }
+    } else { otu.psct <- otu.psct + pseudocount }
+  }
+  otu.psct <- counts2props(otu.psct)
+  otu.tab <- temp$otu.props[, tip.label]
+  
+  # Calculate tip-level CLR transformed data and geometric mean for each sample 
+  samp.gm <- apply(otu.psct, 1, FUN = function(x) mean(log(x))) 
+  otu.tab.clr <- t(apply(otu.psct, 1, FUN = function(x) log(x) - mean(log(x))))
+  nsamp <- nrow(otu.psct) 
+
+  # Summarize tree 
+  ntip <- length(tip.label)     # number of OTUs (# tips on tree = # columns)
   nbr <- nrow(tree$edge)        # number of branches = 2*(ntip - 1)
   edge <- tree$edge             # edges entering a node (1 through (ntip - 1))
-  edge2 <- edge[, 2]            # edges leaving a node (1 through 2*(ntip -1))
-  br.len <- tree$edge.length    # branch lengths, corresponds to edge2
+  edge2 <- edge[, 2]            # edges leaving a node (1 through 2*ntip -1)
+  nn <- 2*ntip - 1 
+  br.len <- tree$edge.length    # branch lengths, corresponds to (leaving) edge2 node 
   
-  #  Accumulate OTU proportions up the tree
-  ## Note: columns are samples, rows are branches 
-  cum <- matrix(0, nbr, n)							# Branch abundance matrix (n = nsamp = nsubj * ntimes in this usage) 
+  # Cumulative proportions and CLR up the tree 
+  ## Note: columns are samples, rows are branches (transpose of normal OTU matrix) 
+  cum <- matrix(0, nbr, nsamp)							# Branch abundance matrix (nsamp = nsubj * ntimes) 
   for (i in 1:ntip) {
-    tip.loc <- which(edge2 == i)
-    cum[tip.loc, ] <- cum[tip.loc, ] + otu.tab[, i]
+    tip.loc <- which(edge2 == i)    # the row of `edge` corresponding to branch leaving this tip 
+    cum[tip.loc, ] <- cum[tip.loc, ] + otu.psct[, i]
     node <- edge[tip.loc, 1]						# Assume the direction of edge
-    node.loc <- which(edge2 == node)
+    node.loc <- which(edge2 == node)    # next-level-up node (the other end of this edge/branch)
     while (length(node.loc)) {
-      cum[node.loc, ] <- cum[node.loc, ] + otu.tab[, i]
+      cum[node.loc, ] <- cum[node.loc, ] + otu.psct[, i]
       node <- edge[node.loc, 1]
       node.loc <- which(edge2 == node)
     }
   }
-  colnames(cum) = rownames(otu.tab)
+  colnames(cum) = rownames(otu.psct)
+  rownames(cum) = edge2
   
-  ### Step 1: calculate within-subject distance data
+  # cumulative CLR-transformed 
+  clr.cum = matrix(0, nbr, nsamp)
+  colnames(clr.cum) = rownames(otu.psct)
+  rownames(clr.cum) = edge2
+  for (i in 1:nbr) {
+    this.children <- getDescendants(tree, rownames(cum)[i])
+    if (length(this.children) > 0) {
+      this.idx <- unique(c(rownames(cum)[i], (1:ntip)[-which((1:ntip) %in% this.children)]))
+    } else {
+      this.idx <- unique(c(rownames(cum)[i], (1:ntip)))
+    }
+    if (length(this.idx) > 1) {
+      this.gm <- apply(cum[this.idx, ], 2, FUN = function(x) mean(log(x)))  # GM if all under given node are this OTU 
+      clr.cum[i, ] <- log(cum[i, ]) - this.gm
+    } else {  # should only be root node 
+      clr.cum[i, ] <- 0  
+    }
+  }
+
+  # given cumulative CLR, calculate within-subject distances 
   if (paired) {
-    tsf.dat <- pltransform(otu.data = list(otu.props = t(cum), otu.clr = t(cum), metadata = metadata), paired = TRUE) 
+    tsf.dat <- pltransform(otu.data = list(otu.props = t(cum), otu.clr = t(clr.cum), metadata = metadata), paired = TRUE) 
   } else {
-    tsf.dat <- pltransform(otu.data = list(otu.props = t(cum), otu.clr = t(cum), metadata = metadata), paired = FALSE) 
+    tsf.dat <- pltransform(otu.data = list(otu.props = t(cum), otu.clr = t(clr.cum), metadata = metadata), paired = FALSE) 
   }
   cum.avg <- t(tsf.dat$avg.prop)
   cum.unw <- t(tsf.dat$dat.binary)
-  cum.gen <- t(tsf.dat$dat.quant.prop) 
+  cum.gen <- t(tsf.dat$dat.quant.clr) 
   
   # Construct the returning array
   # d_UW: unweighted
@@ -146,3 +184,4 @@ LUniFrac <- function(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired, check.
   }
   return(lunifracs)
 }
+

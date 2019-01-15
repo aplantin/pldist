@@ -4,12 +4,12 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----installation-instructions, message = FALSE--------------------------
-#install.packages("devtools") #run if you don't have devtools installed 
-library(devtools)  
+## ----installation-instructions-------------------------------------------
+# only run if you don't have devtools installed 
+#install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
 
-## ----load, message = FALSE-----------------------------------------------
+## ----load----------------------------------------------------------------
 library(pldist)
 
 ## ----load-data-----------------------------------------------------------
@@ -24,7 +24,7 @@ paired.otus[1:4,1:4]
 paired.meta[1:4,]
 
 # Transformation function 
-res <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE, norm = TRUE)
+res <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
 
 # Binary transformation 
 # 0.5 indicates OTU was present at Time 2, absent at Time 1
@@ -44,7 +44,7 @@ res$type
 # For comparison, this uses a longitudinal transformation (applied at 2 time points)
 # due to the argument "paired = FALSE". 
 # Type is "Balanced" because same time points were observed for all subjects 
-res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE, norm = TRUE)
+res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE)
 res2$type   
 
 # With the longitudinal binary transformation applied at 2 time points, the value 
@@ -100,11 +100,6 @@ pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccar
 # (Gamma controls weight placed on abundant lineages) 
 pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
     method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
-
-## ----pldist-all----------------------------------------------------------
-# Multiple distances
-pldist_all(paired.otus, paired.meta, paired = TRUE, method = c("gower", "bray", "unifrac"), 
-           tree = sim.tree, gam = c(0, 0.5, 1))
 
 ## ----gen-tree------------------------------------------------------------
 # tree tip names must match column names in OTU table

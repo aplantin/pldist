@@ -44,7 +44,7 @@ knitr::opts_chunk$set(
 
 The big picture of this set of methods is a two-step process in which (1) OTU data at multiple time points for a subject are summarized into the change across time for each OTU, and (2) these changes across time are compared between subjects. 
 
-Four main transformations are available to define changes within a subject. All are discussed in more detail in [Transformations and Dissimilarities]. The choices distinguishing these four transformations are **paired vs. longitudinal** and **qualitative vs. quantitative**. 
+Four transformations are available to define changes within a subject. All are discussed in more detail in [Transformations and Dissimilarities]. The choices distinguishing these four transformations are **paired vs. longitudinal** and **qualitative vs. quantitative**. 
 
 First, **paired vs. longitudinal**: 
 - The paired transformations allow exactly two time points per subject (or pairs of subjects). They account for direction of change, so if a taxon becomes 20\% more abundant in one subject and 20\% less abundant in another subject, the difference in changes across time is 40\%. 
@@ -52,7 +52,7 @@ First, **paired vs. longitudinal**:
 
 Secondly, **qualitative vs. quantitative**: 
 - For qualitative transformations, only changes in presence or absence of OTUs contribute to the distance or dissimilarity. A 20\% change in OTU abundance does not matter, whereas an OTU that was present at time 1 but not observed at time 2 does contribute to the distance. 
-- For quantitative transformations, changes in OTU abundance do matter. If an OTU changes by 20\% in relative abundance for one subject and 40\% for another subject, those are considered different changes (and contribute to the overall dissimilarity between those two subjects). A "normalized" and "unnormalized" (to the average abundance of that taxon) version are available.
+- For quantitative transformations, changes in OTU abundance do matter. If an OTU changes by 20\% in relative abundance for one subject and 40\% for another subject, those are considered different changes (and contribute to the overall dissimilarity between those two subjects). 
 
 Once the selected data transformation has been applied, a corresponding version of the Bray-Curtis, Jaccard, Kulczynski, Gower, or UniFrac distance metrics may be calculated between subjects. The resulting distance matrices may be used in any distance-based analysis, including ordination analysis, kernel machine regression methods, permutation-based testing, and others. 
 
@@ -62,9 +62,9 @@ The author and maintainer of the `pldist` R package is Anna Plantinga.
 
 Currently, the package may only be downloaded and installed from GitHub using the `devtools` package. Type the following command in your R console: 
 
-```{r installation-instructions, message = FALSE}
-#install.packages("devtools") #run if you don't have devtools installed 
-library(devtools)  
+```{r installation-instructions}
+# only run if you don't have devtools installed 
+#install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
 ``` 
 
@@ -74,7 +74,7 @@ This section provides an overview of the main components of the package and usag
 
 First, we load the `pldist` package. 
 
-```{r load, message = FALSE} 
+```{r load} 
 library(pldist)
 ``` 
 
@@ -102,7 +102,6 @@ Required function input consists of:
     + An indicator of time or group, with column name "time". For paired data, this may take any two unique values. For longitudinal data, as.numeric() must give the proper levels with proper spacing; in the vast majority of cases, this column should be a numerical variable indicating time.
 - Logical indicating whether the data are paired 
 - Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred. 
-- Logical indicating whether to use normalized version (default TRUE; only affects the quantitative transformation)
     
 The output consists of a list with components: 
 
@@ -117,7 +116,7 @@ paired.otus[1:4,1:4]
 paired.meta[1:4,]
 
 # Transformation function 
-res <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE, norm = TRUE)
+res <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
 
 # Binary transformation 
 # 0.5 indicates OTU was present at Time 2, absent at Time 1
@@ -137,7 +136,7 @@ res$type
 # For comparison, this uses a longitudinal transformation (applied at 2 time points)
 # due to the argument "paired = FALSE". 
 # Type is "Balanced" because same time points were observed for all subjects 
-res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE, norm = TRUE)
+res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE)
 res2$type   
 
 # With the longitudinal binary transformation applied at 2 time points, the value 
@@ -183,7 +182,7 @@ D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal t
 
 ### All Distances 
 
-The general form of the distance function is `pldist`. The parameter "method" controls which distance metric is used. Available metrics are paired and longitudinal variations of Bray-Curtis, Jaccard, Kulczynski, Gower, and UniFrac, described further in the following section ([Transformations and Dissimilarities]). The parameters "paired" and "binary" determine which of the four transformations is used. 
+The general form of the distance function, which is also the primary function of the R package, is `pldist`. The parameter "method" controls which distance metric is used. Available metrics are paired and longitudinal variations of Bray-Curtis, Jaccard, Kulczynski, Gower, and UniFrac, described further in the following section ([Transformations and Dissimilarities]). The parameters "paired" and "binary" determine which of the four transformations is used. 
 
 The output is a list with elements "D" (the distance/dissimilarity matrix) and "type" (a summary of the distance metric and transformation used). 
 
@@ -211,14 +210,6 @@ pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE,
     method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
 ```
 
-If multiple distances are desired, `pldist_all` returns a list with both quantitative and qualitative versions of each requested metric, named (for example) "D_gower_quant" or "D_gower_qual" for all metrics except UniFrac; "D_UW" for the unweighted paired/longitudinal UniFrac; and "D_gam" for each value of gamma for the generalized paired/longitudinal UniFrac metrics. 
-
-```{r pldist-all}
-# Multiple distances
-pldist_all(paired.otus, paired.meta, paired = TRUE, method = c("gower", "bray", "unifrac"), 
-           tree = sim.tree, gam = c(0, 0.5, 1))
-```
-
 ## Transformations and Dissimilarities
 
 In this section, we provide the mathematical definitions for the transformations and distances/dissimilarities included in the package, along with a few notes about features of particular metrics. Throughout, $m$ is the number of OTUs measured (generally indexed by $k$), $q$ is the number of time points observed per subject (generally indexed by $l$), and $p_k^{(X, l)}$ is the relative abundance (proportion) of taxon $k$ for subject $X$ at time $l$. The latter is abbreviated to $p_k^X$ for single time point metrics. 
@@ -229,26 +220,18 @@ We introduce four transformations for OTU abundance data, depending on whether t
 
 1. Paired, Qualitative: $$
 d_k^A(t_1, t_2) = \frac{1}{2} \cdot \left[ I\left(p_k^{(A, t_1)} > 0\right) - I\left(p_k^{(A, t_2)} > 0\right) \right] \in \lbrace -0.5, 0, 0.5 \rbrace $$
-2. Paired, Quantitative: 
-    a. Normalized: 
-    $$ d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] $$
-    b. Unnormalized: 
-     $$ d_k^A(t_1, t_2) = \frac{1}{2} \left( p_k^{(A, t_2)} - p_k^{(A, t_1)} \right) \in [-1, 1] $$
+2. Paired, Quantitative: $$ 
+d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] $$
 3. Longitudinal, Qualitative: $$ d_k^A(t_1, \ldots, t_q)  = \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert I(p_k^{A,t_{l+1}} > 0) - I(p_k^{A, t_l} > 0) \right\rvert $$
-4. Longitudinal, Quantitative: 
-    a. Normalized: 
-    $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert $$
-    b. Unnormalized: 
-    $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert p_k^{A, t_{l+1}} - p_k^{A, t_l}  \right\rvert $$
+4. Longitudinal, Quantitative: $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert $$
 
 There are several items to note in comparing these transformations. 
 
 - The paired transformation is not equivalent to the longitudinal transformation applied at two time points: the paired transformations incorporate direction of change, whereas the longitudinal versions only summarize absolute magnitude of change. 
-- Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), great caution is advised. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups. 
-- The "normalized"" quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same normalized $d_k$ as a change from 0.02 to 0.04. This is not true for the "unnormalized" quantitative transformations. 
-    - In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter $\gamma$. 
-    - Without any such adjustments for other dissimilarities, default behavior is to use the "unnormalized" quantitative transformations for all other dissimilarities. These tend to place higher weight on more abundant taxa. 
-- The longitudinal $d_k$ are always nonnegative and, depending on the choice of $t_k$ units, may take any value. The paired $d_k$ may be negative or positive. 
+- Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups. 
+- Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same $d_k$ as a change from 0.02 to 0.04. 
+    - In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter $\gamma$. No such adjustments are currently available for other dissimilarities. 
+- The longitudinal $d_k$ are always nonnegative and, depending on the choice of $t_k$ units, may take any value. The paired $d_k$ may be negative or positive, but are always between -0.5 and 0.5. 
 
 ### Bray-Curtis 
 

@@ -10,12 +10,12 @@ Description: Calculates paired and longitudinal UniFrac, Bray-Curtis, Jaccard, G
     over time and allow these changes to be compared across treatments, conditions, or 
     levels of a covariate. For more information, please see Plantinga et al (2018+).  
 Depends: R (>= 3.4.0)
-Imports: ape
+Imports: ape, phytools
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2018-10-09 10:44:06 UTC; anna
+Packaged: 2019-01-15 14:17:17 UTC; amp9
 Suggests: knitr, rmarkdown, testthat, devtools, MiRKAT
 VignetteBuilder: knitr

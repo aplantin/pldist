@@ -4,26 +4,25 @@
 \alias{tsf_long}
 \title{tsf_long}
 \usage{
-tsf_long(otus, metadata, norm = TRUE)
+tsf_long(otu.props, otu.clr, metadata, norm = TRUE)
 }
 \arguments{
-\item{otus}{Matrix of OTU counts or proportions. Notes: (1) Will be transformed to 
-proportions if it's not already; (2) Row names must be sample identifiers 
-(matching metadata), and column names must be OTU identifiers (enforced if 
-using UniFrac distances).}
+\item{otu.props}{Matrix of OTU proportions (rownames = sample IDs, colnames = OTU IDs)}
+
+\item{otu.clr}{Matrix of CLR-transformed OTU proportions (rownames = sample IDs, colnames = OTU IDs)}
 
 \item{metadata}{Data frame with three columns: subject identifiers (n unique values, column name "subjID"), 
 sample identifiers (must match row names of otu.tab, column name "sampID"), 
-and time point or group identifier (if using longitudinal distances, this must be numeric or 
-convertable to numeric).}
+and time point or group identifier.}
 
 \item{norm}{Indicator of whether to normalize the difference to average taxon abundance or not (default TRUE)}
 }
 \value{
-List with the following elements. Both data matrices have subject identifiers 
+List with the following elements. Data matrices have subject identifiers 
     as row names and OTU identifiers as column names.  
     \item{dat.binary}{n x p matrix of data after longitudinal, binary/qualitative transformation} 
-    \item{dat.quant}{n x p matrix of data after longitudinal, quantitative transformation} 
+    \item{dat.quant.prop}{n x p matrix of data after longitudinal, quantitative transformation applied to OTU proportions} 
+    \item{dat.quant.clr}{n x p matrix of data after longitudinal, quantitative transformation applied to CLR-transformed OTU proportions} 
     \item{avg.prop}{n x p matrix with overall average proportion of each taxon}
 }
 \description{

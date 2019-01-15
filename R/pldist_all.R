@@ -14,6 +14,11 @@
 #' @param paired Logical indicating whether to use the paired version of the metric (TRUE) or the 
 #'     longitudinal version (FALSE). Paired analyis is only possible when there are exactly 2 
 #'     unique time points/identifiers for each subject or pair. 
+#' @param clr Logical indicating whether to use CLR-transformed abundances (TRUE) or original
+#'     proportions (FALSE) in quantitative distances/dissimilarities. Default FALSE. 
+#' @param pseudoct Pseudocount value to be added to each cell of the matrix prior to CLR transformation. 
+#'     Default is NULL; if NULL, 0.5 will be added if data are counts, min(1e-06, 0.5*min(nonzero p)) 
+#'     will be added if data are proportions, and nothing will be added if no cells have zero values. 
 #' @param method Desired distance metric(s). Include a vector with any combination of braycurtis,
 #'     jaccard, kulczynski, gower, and unifrac, or any unambiguous abbreviation thereof. 
 #' @param tree Rooted phylogenetic tree of R class "phylo". Default NULL; only needed for 
@@ -27,8 +32,8 @@
 #' 
 #' @export
 #'     
-pldist_all <- function(otus, metadata, paired = FALSE, method = c("b", "g", "j", "k", "u"), 
-                   tree = NULL, gam = c(0, 0.5, 1)) {
+pldist_all <- function(otus, metadata, paired = FALSE, clr = FALSE, pseudoct = NULL, 
+                       method = c("b", "g", "j", "k", "u"), tree = NULL, gam = c(0, 0.5, 1)) {
   ## Find desired method 
   method.opts = c("braycurtis", "jaccard", "kulczynski", "gower", "unifrac")
   this.method = pmatch(trimws(tolower(method)), method.opts, nomatch = NA)
@@ -37,18 +42,16 @@ pldist_all <- function(otus, metadata, paired = FALSE, method = c("b", "g", "j",
   } 
   method = sort(method.opts[this.method])  # unifrac is last (if present) 
   
-  okdat <- check_input(otus = otus, metadata = metadata, paired = paired)
-  otus <- okdat$otus 
-  metadata <- okdat$metadata 
-  remove(okdat) 
+  otu.prepdat <- data_prep(otus = otus, metadata = metadata, paired = paired, pseudoct = pseudoct)
+  tsfdat <- pltransform(otu.prepdat, paired = paired, norm = FALSE)  
+  if (clr) { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.clr)
+  } else { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.prop) }
   
   ## Calculate distances/dissimilarities 
   Ds <- list() 
   
   for (mm in 1:length(method)) {
     if (method[mm] != "unifrac") {
-      ## Calculate transformed data and apply distance (all except UniFrac) 
-      tsf.res <- pltransform(otus = otus, metadata = metadata, paired = paired, check.input = FALSE, norm = FALSE)
       this.D.bin <- switch(method[mm], 
                            braycurtis = braycurtis(tsf.res, binary = TRUE), 
                            jaccard = jaccard(tsf.res, paired = paired, binary = TRUE), 
@@ -66,7 +69,12 @@ pldist_all <- function(otus, metadata, paired = FALSE, method = c("b", "g", "j",
       ## Calculate paired/longitudinal UniFrac dissimilarities 
       if (is.null(tree)) stop("Tree is required for UniFrac family metrics.")
       if (!is.rooted(tree)) stop("Rooted phylogenetic tree required!") 
-      this.D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)
+      
+      if (clr) {
+        this.D <- clr_LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, pseudocount = pseudoct)
+      } else {
+        this.D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)
+      }
       
       Ds[[(2*mm - 1)]] <- this.D[,,"d_UW"]
       for (i in 1:length(gam)) {

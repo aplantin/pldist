@@ -14,7 +14,7 @@ If you encounter any bugs or have any specific feature requests, please [file an
 You may install `pldist` from GitHub using the following code: 
 
 ```{r install} 
-## install.packages("devtools") # only run this line if necessary
+## install.packages("devtools") # run this line if devtools is not installed
 devtools::install_github(repo = "aplantin/pldist")
 ```
 

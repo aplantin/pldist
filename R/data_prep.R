@@ -23,9 +23,9 @@
 #' @export
 #' 
 data_prep <- function(otus, metadata, paired, pseudoct = NULL) {
-  ## Check and prepare all input 
+  ## Check and prepare all input
   if (nrow(otus) != nrow(metadata)) {
-    stop("Number of rows of metadata and OTUs should match") } 
+    stop("Number of rows of metadata and OTUs should match") }
   
   if (any(apply(otus, 1, FUN = function(x) all(x == 0)))) {
     stop("At least one subject has uniformly zero OTU counts. Please exclude.") }
@@ -42,18 +42,20 @@ data_prep <- function(otus, metadata, paired, pseudoct = NULL) {
     stop("Please ensure rownames of OTU matrix exactly match sample IDs in metadata") }
   
   if (!all(apply(otus, 1, sum) == 1))  {
-    otu.props <- counts2props(otus) 
+    otu.props <- counts2props(otus)
   } else {
-    otu.props <- otus 
+    otu.props <- otus
   }
   otu.clr <-  psct_clr(otus, pseudocount = pseudoct)
+  rownames(otu.props) = rownames(otu.clr) = rownames(otus)
+  colnames(otu.props) = colnames(otu.clr) = colnames(otus)
   
-  if (paired) { 
+  if (paired) {
     if (length(unique(metadata$time)) > 2) {
       stop("Paired dissimilarities were requested, but >2 unique time points/groups were provided.")
     } else if (length(unique(metadata$time)) < 2) {
       stop("Paired dissimilarities were requested, but <2 unique time points/groups were provided.")
-    } 
+    }
     
     persubj <- aggregate(metadata$time, by = list(metadata$subjID), FUN = function(x) length(x))$x
     if (length(unique(persubj)) != 1) {
@@ -61,9 +63,9 @@ data_prep <- function(otus, metadata, paired, pseudoct = NULL) {
            Please check for missing or miscoded data and exclude any unpaired observations.")
     }
     metadata$time = as.numeric(as.factor(metadata$time))
-  } else {      
-    metadata$time = as.numeric(metadata$time) 
-  }
+    } else {
+      metadata$time = as.numeric(metadata$time)
+    }
   
   return(list(otu.props = otu.props, otu.clr = otu.clr, metadata = metadata))
 }
@@ -80,30 +82,31 @@ data_prep <- function(otus, metadata, paired, pseudoct = NULL) {
 #' 
 psct_clr <- function(otus, pseudocount = NULL) {
   if (any(otus == 0)) {
-    ## pseudocount 
+    ## pseudocount
     if (is.null(pseudocount)) {
       subjsums <- apply(otus, 1, FUN = function(x) sum(x))
-      if (all(subjsums == 1)) {  # data are proportions 
+      if (all(subjsums == 1)) {  # data are proportions
         otus <- otus + min(1e-06, otus[otus != 0])
       } else {
         otus <- otus + 0.5
       }
     } else {
-      otus <- otus + pseudocount 
+      otus <- otus + pseudocount
     }
   }
   
-  otus <- counts2props(otus) 
+  otus <- counts2props(otus)
   
   gm <- apply(otus, 1, FUN = function(x) exp(mean(log(x))))
-  tsf.otus <- matrix(nrow = nrow(otus), ncol = ncol(otus)) 
+  tsf.otus <- matrix(nrow = nrow(otus), ncol = ncol(otus))
   for (i in 1:nrow(otus)) {
     tsf.otus[i,] = log(otus[i,]/gm[i])
   }
-  rownames(tsf.otus) = rownames(otus) 
-  colnames(tsf.otus) = colnames(otus) 
+  rownames(tsf.otus) = rownames(otus)
+  colnames(tsf.otus) = colnames(otus)
   return(tsf.otus)
 }
+
 
 
 #' counts2props 
@@ -117,7 +120,8 @@ psct_clr <- function(otus, pseudocount = NULL) {
 #' @export 
 #' 
 counts2props <- function(x) {
-  return(t(apply(x, 1, FUN = function(y) y/sum(y))))
+  mat <- t(apply(x, 1, FUN = function(y) y/sum(y)))
+  rownames(mat) = rownames(x)
+  colnames(mat) = colnames(x)
+  return(mat)
 }
-
-

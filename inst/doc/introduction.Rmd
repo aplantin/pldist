@@ -33,6 +33,7 @@ knitr::opts_chunk$set(
     + [Gower] 
     + [Unweighted UniFrac] 
     + [Generalized UniFrac]
+    + [CLR-Transformed Paired/Longitudinal UniFrac]
 - [Appendix: Generating Test Data]
 - [References] 
 
@@ -44,15 +45,22 @@ knitr::opts_chunk$set(
 
 The big picture of this set of methods is a two-step process in which (1) OTU data at multiple time points for a subject are summarized into the change across time for each OTU, and (2) these changes across time are compared between subjects. 
 
-Four transformations are available to define changes within a subject. All are discussed in more detail in [Transformations and Dissimilarities]. The choices distinguishing these four transformations are **paired vs. longitudinal** and **qualitative vs. quantitative**. 
+Four transformations are available to define changes within a subject. All are discussed in more detail in [Transformations and Dissimilarities]. The choices distinguishing these four transformations are **paired vs. longitudinal** and **qualitative vs. quantitative**. In addition, the quantitative transformations may be applied to **taxon proportions** or **centered log-ratio (CLR) transformed proportions**. 
 
 First, **paired vs. longitudinal**: 
+
 - The paired transformations allow exactly two time points per subject (or pairs of subjects). They account for direction of change, so if a taxon becomes 20\% more abundant in one subject and 20\% less abundant in another subject, the difference in changes across time is 40\%. 
 - The longitudinal transformations allow any number of time points per subject, including different numbers of observations or time between observations for different subjects. They do not account for direction of change, so if a taxon becomes 20\% more abundant in one subject and 20\% less abundant in another subject, those subjects experienced *the same* magnitude of change with respect to that taxon. 
 
-Secondly, **qualitative vs. quantitative**: 
+Second, **qualitative vs. quantitative**: 
+
 - For qualitative transformations, only changes in presence or absence of OTUs contribute to the distance or dissimilarity. A 20\% change in OTU abundance does not matter, whereas an OTU that was present at time 1 but not observed at time 2 does contribute to the distance. 
 - For quantitative transformations, changes in OTU abundance do matter. If an OTU changes by 20\% in relative abundance for one subject and 40\% for another subject, those are considered different changes (and contribute to the overall dissimilarity between those two subjects). 
+
+Third, **CLR or proportions**: 
+
+- For quantitative transformations only, the paired/longitudinal transformation may be applied to centered log-ratios rather than original taxon proportions. The centered log-ratio transformation accounts for data compositionality (the fact that taxon proportions must sum to 1 and therefore are not independent). 
+- If the primary scientific interest is in hypothesis testing using, e.g., kernel machine regression methods such as MiRKAT, CLR transformation matters less. If primary scientific interest is in ordination or correlation-based analysis, then CLR-transformation is recommended. 
 
 Once the selected data transformation has been applied, a corresponding version of the Bray-Curtis, Jaccard, Kulczynski, Gower, or UniFrac distance metrics may be calculated between subjects. The resulting distance matrices may be used in any distance-based analysis, including ordination analysis, kernel machine regression methods, permutation-based testing, and others. 
 
@@ -62,7 +70,7 @@ The author and maintainer of the `pldist` R package is Anna Plantinga.
 
 Currently, the package may only be downloaded and installed from GitHub using the `devtools` package. Type the following command in your R console: 
 
-```{r installation-instructions}
+```{r installation-instructions, message=F}
 # only run if you don't have devtools installed 
 #install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
@@ -74,7 +82,7 @@ This section provides an overview of the main components of the package and usag
 
 First, we load the `pldist` package. 
 
-```{r load} 
+```{r load, message=F} 
 library(pldist)
 ``` 
 
@@ -91,24 +99,39 @@ data("unbal.long.otus"); data("unbal.long.meta")
 
 ### Data Transformations 
 
-The data transformation function is `pltransform`. The transformations are provided as a separate function so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. This function **does not** need to be called prior to utilizing the distance function; all transformations (and input checking) are included within the distance function. 
+The data transformation function is `pltransform`. This function takes as input the output from the data preparation function `data_prep()`. The data preparation and transformation functions are provided separately so that if desired, paired or longitudinally transformed data may be included in other (distance-based or non-distance-based) analyses. These functions **do not** need to be called prior to utilizing the distance function (and should not!); all preparation, data checking, and transformations are included within the distance function. 
 
-Required function input consists of: 
+Required input for `data_prep()` consists of: 
 
 - An OTU matrix with one row per sample and one column per OTU; row names should be unique sample identifiers 
 - Sample metadata, consisting of: 
     + Subject identifiers, with column name "subjID". 
     + Sample identifiers, with column name "sampID". These must exactly match the row names of the OTU matrix. 
     + An indicator of time or group, with column name "time". For paired data, this may take any two unique values. For longitudinal data, as.numeric() must give the proper levels with proper spacing; in the vast majority of cases, this column should be a numerical variable indicating time.
-- Logical indicating whether the data are paired 
-- Logical indicating whether to check function input before proceeding (default TRUE). This should always be TRUE unless the function is being called from within another function and the data checks have already occurred. 
+- Paired: Logical value indicating whether the data are paired 
+- Pseudocount: Value to be added to the OTU matrix prior to CLR transformation. If NULL (the default value), then 0.5 will be added if the input data are counts; min(1e-06, 0.5*min(nonzero p)) will be added if the input data are proportions; and nothing will be added if no cells have zero values. Pseudocounts are only added for the CLR-transformed data matrix, not the OTU proportion matrix, so the OTU proportion matrix will still contain exact zeros if they were present in the original data. 
     
 The output consists of a list with components: 
 
+- otu.prop: OTU proportions
+- otu.clr: CLR-transformed OTU proportions  
+- metadata: Original metadata file
+
+All data is also checked for any errors or inconsistency with selected options in this function. 
+
+Following the `data_prep()` function, the `pltransform()` function performs paired or longitudinal data transformations. Required input for `pltransform()` is: 
+
+- otu.data: Output from `data_prep()` 
+- paired: Logical indicating whether the data are paired 
+- norm: Logical indicating whether to normalize quantitative metrics by dividing differences in taxon changes by overall taxon abundance (default TRUE)
+
+The output consists of a list with components: 
+
 - dat.binary: transformed data matrix after using qualitative/binary transformation (as described in the later section [Transformations and Dissimilarities]) 
-- dat.quant: transformed data matrix after using quantitative transformation (again, as described later) 
+- dat.quant.prop: transformed data matrix after using quantitative transformation applied to matrix of proportions (as described later) 
+- dat.quant.clr: transformed data matrix after using quantitative transformation applied to CLR-transformed data (as described later) 
 - avg.prop: average proportion of each OTU for each subject
-- Type of transformations used (paired vs. longitudinal), accessible by res$type.  
+- type: Type of transformations used (paired vs. longitudinal). 
 
 ```{r transform} 
 # Input: Notice that row names are sample IDs 
@@ -116,19 +139,23 @@ paired.otus[1:4,1:4]
 paired.meta[1:4,]
 
 # Transformation function 
-res <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
+otu.data <- data_prep(paired.otus, paired.meta, paired = TRUE, pseudoct = NULL)
+otu.data$otu.props[1:3,1:3]  # OTU proportions 
+otu.data$otu.clr[1:3,1:3]    # CLR-transformed proportions
+res <- pltransform(otu.data, paired = TRUE, norm = TRUE)
 
 # Binary transformation 
 # 0.5 indicates OTU was present at Time 2, absent at Time 1
 # -0.5 indicates OTU was present at Time 1, absent at Time 2 
 # Row names are now subject IDs 
-res$dat.binary   
+res$dat.binary[1:3,1:3]
 
 # Quantitative transformation (see details in later sections)
-round(res$dat.quant, 2)
+round(res$dat.quant.prop[1:3,1:3], 2)
+round(res$dat.quant.clr[1:3,1:3], 2)
 
 # Average proportion per OTU per subject 
-round(res$avg.prop, 2)
+round(res$avg.prop[1:3,1:3], 2)
 
 # This was a paired transformation 
 res$type 
@@ -136,23 +163,25 @@ res$type
 # For comparison, this uses a longitudinal transformation (applied at 2 time points)
 # due to the argument "paired = FALSE". 
 # Type is "Balanced" because same time points were observed for all subjects 
-res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE)
+otu.data2 <- data_prep(paired.otus, paired.meta, paired = FALSE, pseudoct = NULL)
+res2 <- pltransform(otu.data2, paired = FALSE)
 res2$type   
 
 # With the longitudinal binary transformation applied at 2 time points, the value 
 # is 1 if any change in presence/absence was observed, 0 otherwise 
-res2$dat.binary 
+res2$dat.binary[1:3,1:3]
 
 # And if you use an unbalanced design, the function gives a warning. 
 # It otherwise operates in the same way. 
-res3 <- pltransform(unbal.long.otus, unbal.long.meta, paired = FALSE, check.input = TRUE)
-round(res3$dat.quant[1:4,1:4], 2)
+otu.data3 <- data_prep(unbal.long.otus, unbal.long.meta, paired = FALSE, pseudoct = NULL)
+res3 <- pltransform(otu.data3, paired = FALSE)
+round(res3$dat.quant.prop[1:3,1:3], 2)
 ``` 
 
 
 ### UniFrac Family Distances 
 
-The paired and longitudinal UniFrac family distances/dissimilarities, collectively referred to as LUniFrac, may be accessed using the `LUniFrac` function, shown below, or using the overall distance function `pldist`, demonstrated in the next section. Both use the same core code and will give the same distance matrices. 
+The paired and longitudinal UniFrac family distances/dissimilarities, collectively referred to as LUniFrac, may be accessed using the `LUniFrac` function, shown below, or using the overall distance function `pldist`, demonstrated in the next section. Both use the same core code and will give the same distance matrices. CLR-transformed LUniFrac is available through the function `clr_LUniFrac` or through `pldist`. 
 
 The output of LUniFrac is an array of distance matrices, first using all specified gamma values, then the unweighted version (using the qualitative/binary transformation). Individual distance matrices may be obtained using, for example, `D[, , "d_1"]` for the matrix with $\gamma = 1$ or `D[, , "d_UW"]` for the unweighted LUniFrac matrix. 
 
@@ -177,6 +206,15 @@ D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, tree =
                       gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
 D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
 D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
+
+# CLR-transformed data 
+D3.unifrac <- clr_LUniFrac(otu.tab = paired.otus, metadata = paired.meta, tree = sim.tree, 
+                           gam = c(0, 0.5, 1), paired = TRUE, pseudocount = NULL)
+D3.unifrac[, , "d_1"]  # gamma = 1 (quantitative paired transformation with CLR data) 
+
+# unweighted LUniFrac is identical to output from LUniFrac() 
+# since CLR transformation is only for quantitative 
+all(D3.unifrac[, , "d_UW"] == D.unifrac[, , "d_UW"])    
 ```
 
 
@@ -188,9 +226,13 @@ The output is a list with elements "D" (the distance/dissimilarity matrix) and "
 
 ```{r pldist}
 # Gower distance, paired & quantitative transformation 
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "gower")$D
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
+       method = "gower", clr = FALSE)$D  
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
+       method = "gower", clr = TRUE)$D
 
 # Gower distance, paired & qualitative/binary transformation 
+# (CLR option is excluded for brevity)
 pldist(paired.otus, paired.meta, paired = TRUE, binary = TRUE, method = "gower")$D
 
 # Gower distance, longitudinal & quantitative transformation 
@@ -220,10 +262,17 @@ We introduce four transformations for OTU abundance data, depending on whether t
 
 1. Paired, Qualitative: $$
 d_k^A(t_1, t_2) = \frac{1}{2} \cdot \left[ I\left(p_k^{(A, t_1)} > 0\right) - I\left(p_k^{(A, t_2)} > 0\right) \right] \in \lbrace -0.5, 0, 0.5 \rbrace $$
-2. Paired, Quantitative: $$ 
-d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5] $$
+2. Paired, Quantitative
+    a. clr = FALSE, norm = TRUE: $$d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{p_k^{(A, t_2)} - p_k^{(A, t_1)}}{p_k^{(A, t_2)} + p_k^{(A, t_1)}} \in [-0.5, 0.5]$$
+    b. clr = FALSE, norm = FALSE: $$d_k^A(t_1, t_2) = \frac{1}{2} \left(p_k^{(A, t_2)} - p_k^{(A, t_1)}\right)$$
+    c. clr = TRUE, norm = TRUE:  $$d_k^A(t_1, t_2) = \frac{1}{2} \cdot \frac{\mbox{clr}(p_k^{(A, t_2)}) - \mbox{clr}(p_k^{(A, t_1)})}{\lvert \mbox{clr}(p_k^{(A, t_2)}) \rvert + \lvert \mbox{clr}(p_k^{(A, t_1)}) \rvert}$$
+    d. clr = TRUE, norm = FALSE: $$d_k^A(t_1, t_2) = \frac{1}{2} \left(\mbox{clr}(p_k^{(A, t_2)}) - \mbox{clr}(p_k^{(A, t_1)})\right)$$
 3. Longitudinal, Qualitative: $$ d_k^A(t_1, \ldots, t_q)  = \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert I(p_k^{A,t_{l+1}} > 0) - I(p_k^{A, t_l} > 0) \right\rvert $$
-4. Longitudinal, Quantitative: $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert $$
+4. Longitudinal, Quantitative: 
+    a. clr = FALSE, norm = TRUE: $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \frac{p_k^{A, t_{l+1}} - p_k^{A, t_l}}{p_k^{A, t_{l+1}} + p_k^{A, t_l}} \right\rvert $$
+    b. clr = FALSE, norm = FALSE: $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert p_k^{A, t_{l+1}} - p_k^{A, t_l} \right\rvert $$
+    c. clr = TRUE, norm = TRUE: $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \frac{\left\lvert \mbox{clr}(p_k^{A, t_{l+1}}) - \mbox{clr}(p_k^{A, t_l}) \right\rvert}{\lvert \mbox{clr}(p_k^{A, t_{l+1}})\rvert  + \lvert \mbox{clr}(p_k^{A, t_l}) \rvert} $$
+    d. clr = TRUE, norm = FALSE:  $$ d_k^A(t_1, \ldots, t_q) =  \frac{1}{q-1} \sum_{l=1}^{q-1} \left(\frac{1}{t_{l+1} - t_l}\right) \cdot \left\lvert \mbox{clr}(p_k^{A, t_{l+1}}) - \mbox{clr}(p_k^{A, t_l}) \right\rvert $$
 
 There are several items to note in comparing these transformations. 
 
@@ -231,7 +280,8 @@ There are several items to note in comparing these transformations.
 - Although the longitudinal transformations may in theory be applied with unbalanced data (different numbers of observations and/or different length of time between observations), this is not recommended. The longitudinal transformation is a measure of overall variability or volatility in taxon abundance, and measurement on different time scales could easily lead to spurious differences between subjects or groups. 
 - Both quantitative transformations are normalized to overall taxon abundance, so for example, a taxon with relative abundance of 0.2 at time 1 and 0.4 at time 2 is summarized as a normalized change of (0.4 - 0.2)/(0.4 + 0.2) = 0.33, not an absolute difference of 0.2. Hence a change from 0.2 to 0.4 yields the same $d_k$ as a change from 0.02 to 0.04. 
     - In the generalized UniFrac framework, the weight on taxa with different average abundances may be adjusted with the parameter $\gamma$. No such adjustments are currently available for other dissimilarities. 
-- The longitudinal $d_k$ are always nonnegative and, depending on the choice of $t_k$ units, may take any value. The paired $d_k$ may be negative or positive, but are always between -0.5 and 0.5. 
+- The longitudinal $d_k$ are always nonnegative and, depending on the choice of $t_k$ units, may take any value. The paired $d_k$ may be negative or positive, but are always between -0.5 and 0.5 (when norm = TRUE). 
+- CLR transformation replaces $p_k$ with $\mbox{clr}(p_k)$, and in the denominator of the normalized forms, requires absolute values to ensure that the range of possible values for $d$ is as expected. 
 
 ### Bray-Curtis 
 
@@ -311,6 +361,10 @@ where the parameter $\gamma \in [0,1]$, chosen by the user, changes the weight p
 The paired and longitudinal variations on the generalized UniFrac distance, which we term LUniFrac, are defined via 
 $$ D_{AB}^{(\gamma)} = \frac{\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma \lvert d_i^A - d_i^B \rvert} {\sum_i b_i (\bar{p}_i^A + \bar{p}_i^B)^\gamma } $$ 
 where $\bar{p}_i^A = \frac{1}{q} \sum_{l=1}^{q} p_k^{A, t_l}$ is the within-subject average proportion descending from branch $i$. Thus, as in the single time point version, contributions of changes in each branch/taxon are weighted by overall (average) taxon abundance with the weight modulated by $\gamma \in [0,1]$. This is the only metric that incorporates both the original taxon proportions and the transformed data. 
+
+### CLR-Transformed Generalized LUniFrac
+
+For the CLR-transformed generalized paired/longitudinal UniFrac family distances, the OTU matrix of proportions after adding a pseudocount to each cell (if any zero counts are present) is accumulated up the phylogenetic tree as in the single-timepoint UniFrac distances. Then the CLR transformation is taken for the abundance at each branch, assuming all descendants of that branch belong to that OTU. (Hence the geometric mean is re-computed for each interior node, using the cumulative abundance at that node in place of all child nodes.) The paired or longitudinal transformation is applied to these cumulative CLR-transformed data to create the $d_i$ referenced in the previous section. The weighting by average taxon proportion is unchanged; ordinary, rather than CLR-transformed, proportions are still used for this term. 
 
 ## Appendix: Generating Test Data
 
@@ -413,5 +467,7 @@ Jun Chen, Kyle Bittinger, Emily S. Charlson, Christian Hoffmann, James Lewis, Ga
 Catherine Lozupone and Rob Knight (2005). UniFrac: a new phylogenetic method for comparing microbial communities. Applied and Environmental Microbiology 71(12): 8228-8235.
 
 Jari Oksanen, F. Guillaume Blanchet, Roeland Kindt, Pierre Legendre, Peter R. Minchin, R. B. O’hara, Gavin L. Simpson et al. (2013). Package ‘vegan’. Community ecology package, version 2, no. 9.
+
+Ruth Grace Wong (2015). CLRUniFrac GitHub repository: https://github.com/ruthgrace/CLRUniFrac. 
 
 Anna M. Plantinga, Jun Chen, Robert R. Jenq, and Michael C. Wu. pldist: Ecological Dissimilarities for Paired and Longitudinal Microbiome Association Analysis. Under review. 

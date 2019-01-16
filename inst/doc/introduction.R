@@ -4,12 +4,12 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----installation-instructions-------------------------------------------
+## ----installation-instructions, message=F--------------------------------
 # only run if you don't have devtools installed 
 #install.packages("devtools"); library(devtools) 
 devtools::install_github("aplantin/pldist")
 
-## ----load----------------------------------------------------------------
+## ----load, message=F-----------------------------------------------------
 library(pldist)
 
 ## ----load-data-----------------------------------------------------------
@@ -24,19 +24,23 @@ paired.otus[1:4,1:4]
 paired.meta[1:4,]
 
 # Transformation function 
-res <- pltransform(paired.otus, paired.meta, paired = TRUE, check.input = TRUE)
+otu.data <- data_prep(paired.otus, paired.meta, paired = TRUE, pseudoct = NULL)
+otu.data$otu.props[1:3,1:3]  # OTU proportions 
+otu.data$otu.clr[1:3,1:3]    # CLR-transformed proportions
+res <- pltransform(otu.data, paired = TRUE, norm = TRUE)
 
 # Binary transformation 
 # 0.5 indicates OTU was present at Time 2, absent at Time 1
 # -0.5 indicates OTU was present at Time 1, absent at Time 2 
 # Row names are now subject IDs 
-res$dat.binary   
+res$dat.binary[1:3,1:3]
 
 # Quantitative transformation (see details in later sections)
-round(res$dat.quant, 2)
+round(res$dat.quant.prop[1:3,1:3], 2)
+round(res$dat.quant.clr[1:3,1:3], 2)
 
 # Average proportion per OTU per subject 
-round(res$avg.prop, 2)
+round(res$avg.prop[1:3,1:3], 2)
 
 # This was a paired transformation 
 res$type 
@@ -44,17 +48,19 @@ res$type
 # For comparison, this uses a longitudinal transformation (applied at 2 time points)
 # due to the argument "paired = FALSE". 
 # Type is "Balanced" because same time points were observed for all subjects 
-res2 <- pltransform(paired.otus, paired.meta, paired = FALSE, check.input = TRUE)
+otu.data2 <- data_prep(paired.otus, paired.meta, paired = FALSE, pseudoct = NULL)
+res2 <- pltransform(otu.data2, paired = FALSE)
 res2$type   
 
 # With the longitudinal binary transformation applied at 2 time points, the value 
 # is 1 if any change in presence/absence was observed, 0 otherwise 
-res2$dat.binary 
+res2$dat.binary[1:3,1:3]
 
 # And if you use an unbalanced design, the function gives a warning. 
 # It otherwise operates in the same way. 
-res3 <- pltransform(unbal.long.otus, unbal.long.meta, paired = FALSE, check.input = TRUE)
-round(res3$dat.quant[1:4,1:4], 2)
+otu.data3 <- data_prep(unbal.long.otus, unbal.long.meta, paired = FALSE, pseudoct = NULL)
+res3 <- pltransform(otu.data3, paired = FALSE)
+round(res3$dat.quant.prop[1:3,1:3], 2)
 
 ## ----lunifrac------------------------------------------------------------
 # Input: 
@@ -78,11 +84,24 @@ D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, tree =
 D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
 D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)
 
+# CLR-transformed data 
+D3.unifrac <- clr_LUniFrac(otu.tab = paired.otus, metadata = paired.meta, tree = sim.tree, 
+                           gam = c(0, 0.5, 1), paired = TRUE, pseudocount = NULL)
+D3.unifrac[, , "d_1"]  # gamma = 1 (quantitative paired transformation with CLR data) 
+
+# unweighted LUniFrac is identical to output from LUniFrac() 
+# since CLR transformation is only for quantitative 
+all(D3.unifrac[, , "d_UW"] == D.unifrac[, , "d_UW"])    
+
 ## ----pldist--------------------------------------------------------------
 # Gower distance, paired & quantitative transformation 
-pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "gower")$D
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
+       method = "gower", clr = FALSE)$D  
+pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
+       method = "gower", clr = TRUE)$D
 
 # Gower distance, paired & qualitative/binary transformation 
+# (CLR option is excluded for brevity)
 pldist(paired.otus, paired.meta, paired = TRUE, binary = TRUE, method = "gower")$D
 
 # Gower distance, longitudinal & quantitative transformation 

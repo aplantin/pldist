@@ -10,25 +10,25 @@ LUniFrac(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired,
 \arguments{
 \item{otu.tab}{OTU count table, containing 2*n rows (samples) and q columns (OTUs)}
 
-\item{metadata}{Data frame with three columns: subject identifiers (n unique values), 
-sample identifiers (must match row names of otu.tab), 
-and time or group indicator (numeric variable, or factor with levels such that as.numeric returns 
+\item{metadata}{Data frame with three columns: subject identifiers (n unique values),
+sample identifiers (must match row names of otu.tab),
+and time or group indicator (numeric variable, or factor with levels such that as.numeric returns
 the desired ordering). Column names should be subjID, sampID, time.}
 
 \item{tree}{Rooted phylogenetic tree of R class "phylo"}
 
-\item{gam}{Parameter controlling weight on abundant lineages. The same weight is 
+\item{gam}{Parameter controlling weight on abundant lineages. The same weight is
 used within a subjects as between subjects.}
 
 \item{paired}{Logical indicating whether to use the paired (TRUE) or longitudinal (FALSE) transformation.}
 
-\item{check.input}{Logical indicating whether to check the function input values for formatting or 
+\item{check.input}{Logical indicating whether to check the function input values for formatting or
 entry errors (default TRUE).}
 }
 \value{
-Returns a (K+1) dimensional array containing the longitudinal UniFrac dissimilarities 
-   with the K specified gamma values plus the unweighted distance. The unweighted dissimilarity 
-   matrix may be accessed by result[,,"d_UW"], and the generalized dissimilarities by result[,,"d_G"] 
+Returns a (K+1) dimensional array containing the longitudinal UniFrac dissimilarities
+   with the K specified gamma values plus the unweighted distance. The unweighted dissimilarity
+   matrix may be accessed by result[,,"d_UW"], and the generalized dissimilarities by result[,,"d_G"]
    where G is the particular choice of gamma.
 }
 \description{
@@ -40,14 +40,14 @@ Based in part on Jun Chen & Hongzhe Li (2012), GUniFrac.
 
 Computes difference between time points and then calculates
 difference of these differences, resulting in a dissimilarity
-matrix that can be used in a variety of downstream 
+matrix that can be used in a variety of downstream
 distance-based analyses.
 }
 \examples{
 data("bal.long.otus")
 data("bal.long.meta")
 data("sim.tree")
-D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta, 
+D2.unifrac <- LUniFrac(otu.tab = bal.long.otus, metadata = bal.long.meta,
     tree = sim.tree, gam = c(0, 0.5, 1), paired = FALSE, check.input = TRUE)
 D2.unifrac[, , "d_1"]   # gamma = 1 (quantitative longitudinal transformation)
 D2.unifrac[, , "d_UW"]  # unweighted LUniFrac (qualitative/binary longitudinal transf.)

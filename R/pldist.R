@@ -92,7 +92,7 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, clr = FALSE, 
     if (clr) {
       D <- clr_LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, pseudocount = pseudoct)
     } else {
-      D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)
+      D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = TRUE)
     }
   } 
   

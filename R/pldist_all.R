@@ -73,7 +73,7 @@ pldist_all <- function(otus, metadata, paired = FALSE, clr = FALSE, pseudoct = N
       if (clr) {
         this.D <- clr_LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, pseudocount = pseudoct)
       } else {
-        this.D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = FALSE)
+        this.D <- LUniFrac(otu.tab = otus, metadata = metadata, tree = tree, gam = gam, paired = paired, check.input = TRUE)
       }
       
       Ds[[(2*mm - 1)]] <- this.D[,,"d_UW"]

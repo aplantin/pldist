@@ -63,7 +63,12 @@ data_prep <- function(otus, metadata, paired, pseudoct = NULL) {
            Please check for missing or miscoded data and exclude any unpaired observations.")
     }
     metadata$time = as.numeric(as.factor(metadata$time))
-  } else {      
+  } else {    
+    persubj <- aggregate(metadata$time, by = list(metadata$subjID), FUN = function(x) length(x))$x
+    if (any(persubj < 2)) {
+      stop("Some group(s) or subject(s) do not have at least 2 observations. \n
+           Please check for missing or miscoded data and exclude singleton groups/subjects.")
+    }
     metadata$time = as.numeric(metadata$time) 
   }
   
@@ -80,6 +85,7 @@ data_prep <- function(otus, metadata, paired, pseudoct = NULL) {
 #'     are proportions. If all entries are nonzero, nothing is added. 
 #' @return Matrix of CLR-transformed data (dimensions, rownames, colnames match input)
 #' 
+#' @export 
 psct_clr <- function(otus, pseudocount = NULL) {
   if (any(otus == 0)) {
     ## pseudocount 

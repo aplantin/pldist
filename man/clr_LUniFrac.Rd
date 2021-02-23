@@ -4,8 +4,14 @@
 \alias{clr_LUniFrac}
 \title{clr_LUniFrac}
 \usage{
-clr_LUniFrac(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired,
-  pseudocount = NULL)
+clr_LUniFrac(
+  otu.tab,
+  metadata,
+  tree,
+  gam = c(0, 0.5, 1),
+  paired,
+  pseudocount = NULL
+)
 }
 \arguments{
 \item{otu.tab}{OTU count table, containing 2*n rows (samples) and q columns (OTUs)}
@@ -38,7 +44,7 @@ microbial communities across 2 time points, using CLR-transformed data.
 \details{
 Based in large part on Jun Chen & Hongzhe Li (2012), GUniFrac. 
 With reference to the GitHub account of user ruthgrace, repository 
-CLRUniFrac (this method is not associated with a publication).
+CLRUniFrac (this method is not associated with a publication). 
 
 Computes difference between time points and then calculates
 difference of these differences, resulting in a dissimilarity

@@ -4,8 +4,14 @@
 \alias{LUniFrac}
 \title{LUniFrac}
 \usage{
-LUniFrac(otu.tab, metadata, tree, gam = c(0, 0.5, 1), paired,
-  check.input = TRUE)
+LUniFrac(
+  otu.tab,
+  metadata,
+  tree,
+  gam = c(0, 0.5, 1),
+  paired,
+  check.input = TRUE
+)
 }
 \arguments{
 \item{otu.tab}{OTU count table, containing 2*n rows (samples) and q columns (OTUs)}

@@ -4,7 +4,9 @@
 \name{sim.tree}
 \alias{sim.tree}
 \title{Simulated rooted phylogenetic tree.}
-\format{An object of class "phylo".}
+\format{
+An object of class "phylo".
+}
 \usage{
 data(sim.tree)
 }

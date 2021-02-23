@@ -4,12 +4,14 @@
 \name{paired.meta}
 \alias{paired.meta}
 \title{Simulated metadata for paired study design.}
-\format{A data frame with 10 rows and 3 columns. 
+\format{
+A data frame with 10 rows and 3 columns. 
 \describe{
   \item{subjID}{Subject identifiers}
   \item{sampID}{Sample identifiers, matches row names of OTU count matrix}
   \item{time}{Time indicator, takes values 1 or 2}
-}}
+}
+}
 \usage{
 data(paired.meta)
 }

@@ -4,7 +4,9 @@
 \name{bal.long.otus}
 \alias{bal.long.otus}
 \title{Simulated OTU data for balanced longitudinal study design.}
-\format{A matrix with 15 rows and 10 columns. Rows are samples, columns are OTUs.}
+\format{
+A matrix with 15 rows and 10 columns. Rows are samples, columns are OTUs.
+}
 \usage{
 data(bal.long.otus)
 }

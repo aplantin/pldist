@@ -4,8 +4,18 @@
 \alias{pldist}
 \title{pldist}
 \usage{
-pldist(otus, metadata, paired = FALSE, binary = FALSE, clr = FALSE,
-  pseudoct = NULL, method, tree = NULL, gam = c(0, 0.5, 1))
+pldist(
+  otus,
+  metadata,
+  paired = FALSE,
+  binary = FALSE,
+  clr = FALSE,
+  pseudoct = NULL,
+  method,
+  tree = NULL,
+  gam = c(0, 0.5, 1),
+  norm = FALSE
+)
 }
 \arguments{
 \item{otus}{OTU count or frequency table, containing one row per sample and one column per OTU.}
@@ -38,6 +48,8 @@ UniFrac family distances.}
 
 \item{gam}{Parameter controlling weight on abundant lineages for UniFrac family distances. The 
 same weight is used within a subject as between subjects. Default (0, 0.5, 1).}
+
+\item{norm}{Indicator of whether to normalize the difference to average taxon abundance or not (default FALSE)}
 }
 \value{
 Returns a list with elements: 
@@ -75,6 +87,6 @@ pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, method = "jaccar
 # UniFrac additionally requires a phylogenetic tree and gamma values 
 # (Gamma controls weight placed on abundant lineages) 
 pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
-    method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
+    method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1), norm = FALSE)$D 
     
 }

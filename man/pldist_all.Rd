@@ -4,9 +4,17 @@
 \alias{pldist_all}
 \title{pldist_all}
 \usage{
-pldist_all(otus, metadata, paired = FALSE, clr = FALSE,
-  pseudoct = NULL, method = c("b", "g", "j", "k", "u"), tree = NULL,
-  gam = c(0, 0.5, 1))
+pldist_all(
+  otus,
+  metadata,
+  paired = FALSE,
+  clr = FALSE,
+  pseudoct = NULL,
+  method = c("b", "g", "j", "k", "u"),
+  tree = NULL,
+  gam = c(0, 0.5, 1),
+  norm = FALSE
+)
 }
 \arguments{
 \item{otus}{OTU count or frequency table, containing one row per sample and one column per OTU.}
@@ -36,6 +44,8 @@ UniFrac family distances.}
 \item{gam}{Parameter controlling weight on abundant lineages for UniFrac family distances. The 
 same weight is used within a subject as between subjects. Default (0, 0.5, 1); only needed for 
 UniFrac family distances.}
+
+\item{norm}{Indicator of whether to normalize the difference to average taxon abundance or not (default FALSE)}
 }
 \value{
 Returns a list containing all n x n distance (or dissimilarity) matrices requested, 

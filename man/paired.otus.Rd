@@ -4,7 +4,9 @@
 \name{paired.otus}
 \alias{paired.otus}
 \title{Simulated OTU data for paired study design.}
-\format{A matrix with 10 rows and 10 columns. Rows are samples, columns are OTUs.}
+\format{
+A matrix with 10 rows and 10 columns. Rows are samples, columns are OTUs.
+}
 \usage{
 data(paired.otus)
 }

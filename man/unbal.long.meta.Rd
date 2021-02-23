@@ -4,12 +4,14 @@
 \name{unbal.long.meta}
 \alias{unbal.long.meta}
 \title{Simulated metadata for balanced longitudinal study design.}
-\format{A data frame with 14 rows and 3 columns. 
+\format{
+A data frame with 14 rows and 3 columns. 
 \describe{
   \item{subjID}{Subject identifiers}
   \item{sampID}{Sample identifiers, matches row names of OTU count matrix}
   \item{time}{Time indicator}
-}}
+}
+}
 \usage{
 data(unbal.long.meta)
 }

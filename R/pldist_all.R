@@ -26,6 +26,7 @@
 #' @param gam Parameter controlling weight on abundant lineages for UniFrac family distances. The 
 #'     same weight is used within a subject as between subjects. Default (0, 0.5, 1); only needed for 
 #'     UniFrac family distances. 
+#' @param norm Indicator of whether to normalize the difference to average taxon abundance or not (default FALSE)
 #' @return Returns a list containing all n x n distance (or dissimilarity) matrices requested, 
 #' with both quantitative and qualitative versions of the metric, named as "D_metric_quant" or 
 #' "D_metric_qual".
@@ -33,7 +34,7 @@
 #' @export
 #'     
 pldist_all <- function(otus, metadata, paired = FALSE, clr = FALSE, pseudoct = NULL, 
-                       method = c("b", "g", "j", "k", "u"), tree = NULL, gam = c(0, 0.5, 1)) {
+                       method = c("b", "g", "j", "k", "u"), tree = NULL, gam = c(0, 0.5, 1), norm = FALSE) {
   ## Find desired method 
   method.opts = c("braycurtis", "jaccard", "kulczynski", "gower", "unifrac")
   this.method = pmatch(trimws(tolower(method)), method.opts, nomatch = NA)
@@ -43,7 +44,7 @@ pldist_all <- function(otus, metadata, paired = FALSE, clr = FALSE, pseudoct = N
   method = sort(method.opts[this.method])  # unifrac is last (if present) 
   
   otu.prepdat <- data_prep(otus = otus, metadata = metadata, paired = paired, pseudoct = pseudoct)
-  tsfdat <- pltransform(otu.prepdat, paired = paired, norm = FALSE)  
+  tsfdat <- pltransform(otu.prepdat, paired = paired, norm = norm)  
   if (clr) { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.clr)
   } else { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.prop) }
   

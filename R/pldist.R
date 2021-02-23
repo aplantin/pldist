@@ -27,6 +27,8 @@
 #'     UniFrac family distances. 
 #' @param gam Parameter controlling weight on abundant lineages for UniFrac family distances. The 
 #'     same weight is used within a subject as between subjects. Default (0, 0.5, 1). 
+#' @param norm Indicator of whether to normalize the difference to average taxon abundance or not (default FALSE)
+#' 
 #' @return Returns a list with elements: 
 #'     \item{D}{If any metric other than UniFrac is used, D is an n x n distance (or dissimilarity) matrix. 
 #'     For UniFrac-family dissimilarities, D is a (K+1) dimensional array containing the paired or 
@@ -56,14 +58,14 @@
 #' # UniFrac additionally requires a phylogenetic tree and gamma values 
 #' # (Gamma controls weight placed on abundant lineages) 
 #' pldist(paired.otus, paired.meta, paired = TRUE, binary = FALSE, 
-#'     method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1))$D 
+#'     method = "unifrac", tree = sim.tree, gam = c(0, 0.5, 1), norm = FALSE)$D 
 #'     
 #' @importFrom ape rtree is.rooted drop.tip
 #'     
 #' @export
 #'
 pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, clr = FALSE, pseudoct = NULL, 
-                   method, tree = NULL, gam = c(0, 0.5, 1)) {
+                   method, tree = NULL, gam = c(0, 0.5, 1), norm = FALSE) {
   ## Find desired method 
   method.opts = c("braycurtis", "jaccard", "kulczynski", "gower", "unifrac")
   this.method = pmatch(trimws(tolower(method)), method.opts, nomatch = NA)
@@ -76,7 +78,7 @@ pldist <- function(otus, metadata, paired = FALSE, binary = FALSE, clr = FALSE, 
   if (method.opts[this.method] != "unifrac") {
     ## Calculate transformed data and apply distance (all except UniFrac) 
     otu.prepdat <- data_prep(otus = otus, metadata = metadata, paired = paired, pseudoct = pseudoct)
-    tsfdat <- pltransform(otu.prepdat, paired = paired, norm = FALSE)  
+    tsfdat <- pltransform(otu.prepdat, paired = paired, norm = norm)  
     if (clr) { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.clr)
     } else { tsf.res <- list(dat.binary = tsfdat$dat.binary, dat.quant = tsfdat$dat.quant.prop) }
     D <- switch(method, 

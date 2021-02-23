@@ -1,6 +1,6 @@
 Package: pldist
 Title: Paired and Longitudinal Ecological Dissimilarities
-Version: 0.0.0.9000
+Version: 1.0.0.0000
 Authors@R: c(person("Anna M.", "Plantinga", email = "amp9@williams.edu", role = c("aut", "cre")),
             person("Jun", "Chen", role = c("aut")))
 Author: Anna M. Plantinga [aut, cre], Jun Chen [aut]
@@ -14,8 +14,8 @@ Imports: ape, phytools
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2019-01-23 20:10:51 UTC; amp9
+Packaged: 2021-02-23 18:01:59 UTC; anna
 Suggests: knitr, rmarkdown, testthat, devtools, MiRKAT
 VignetteBuilder: knitr
